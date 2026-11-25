@@ -1,0 +1,12 @@
+{
+  "name": "xciv-courier-core",
+  "version": "1.0.0",
+  "private": true,
+  "description": "XCIV Courier Core — vendor deps for maps",
+  "scripts": {
+    "vendor:leaflet": "node -e \"const fs=require('fs');const path=require('path');const src=path.join('node_modules','leaflet','dist');const dest=path.join('assets','vendor','leaflet');fs.mkdirSync(path.join(dest,'images'),{recursive:true});fs.copyFileSync(path.join(src,'leaflet.js'),path.join(dest,'leaflet.js'));fs.copyFileSync(path.join(src,'leaflet.css'),path.join(dest,'leaflet.css'));for (const f of fs.readdirSync(path.join(src,'images'))) fs.copyFileSync(path.join(src,'images',f),path.join(dest,'images',f));\""
+  },
+  "dependencies": {
+    "leaflet": "^1.9.4"
+  }
+}

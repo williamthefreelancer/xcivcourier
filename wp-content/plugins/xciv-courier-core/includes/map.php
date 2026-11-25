@@ -135,13 +135,13 @@ function xciv_core_enqueue_map_assets(): void {
 	} else {
 		wp_enqueue_style(
 			'leaflet',
-			'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css',
+			XCIV_CORE_URI . 'assets/vendor/leaflet/leaflet.css',
 			array(),
 			'1.9.4'
 		);
 		wp_enqueue_script(
 			'leaflet',
-			'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js',
+			XCIV_CORE_URI . 'assets/vendor/leaflet/leaflet.js',
 			array(),
 			'1.9.4',
 			true
