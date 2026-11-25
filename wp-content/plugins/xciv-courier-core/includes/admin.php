@@ -116,7 +116,7 @@ function xciv_core_dashboard_stats(): array {
 
 	$settings = xciv_core_settings();
 	$token    = (string) ( $settings['map']['mapbox_token'] ?? '' );
-	$provider = (string) ( $settings['map']['provider'] ?? 'mapbox' );
+	$provider = (string) ( $settings['map']['provider'] ?? 'custom' );
 	if ( $provider === 'mapbox' && $token === '' ) {
 		$provider = 'custom';
 	}

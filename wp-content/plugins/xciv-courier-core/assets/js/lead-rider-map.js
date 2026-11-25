@@ -270,6 +270,14 @@
 			return null;
 		}
 
+		if (cfg.leafletImagePath && L.Icon && L.Icon.Default) {
+			L.Icon.Default.mergeOptions({
+				iconUrl: cfg.leafletImagePath + 'marker-icon.png',
+				iconRetinaUrl: cfg.leafletImagePath + 'marker-icon-2x.png',
+				shadowUrl: cfg.leafletImagePath + 'marker-shadow.png',
+			});
+		}
+
 		var loading = qs(canvas, '.xciv-lead-map__loading');
 		if (loading) {
 			loading.remove();

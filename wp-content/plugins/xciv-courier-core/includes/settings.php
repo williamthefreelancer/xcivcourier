@@ -41,7 +41,7 @@ function xciv_core_default_settings(): array {
 			'notes_rideshare'      => 'You are a passenger — no personal vehicle. Keep parcels cabin-safe; no oversized trunk loads.',
 		),
 		'map'        => array(
-			'provider'     => 'mapbox', // mapbox | custom
+			'provider'     => 'custom', // custom (Leaflet) | mapbox
 			'mapbox_token' => '',
 			'mapbox_style' => 'mapbox://styles/mapbox/dark-v11',
 			'center_lat'   => 35.312,
@@ -168,8 +168,8 @@ function xciv_core_sanitize_settings( $input ): array {
 	$out['lead_rider']['notes_rideshare']      = sanitize_textarea_field( (string) ( $lr['notes_rideshare'] ?? '' ) );
 
 	$map = isset( $input['map'] ) && is_array( $input['map'] ) ? $input['map'] : array();
-	$provider = sanitize_key( (string) ( $map['provider'] ?? 'mapbox' ) );
-	$out['map']['provider']     = in_array( $provider, array( 'mapbox', 'custom' ), true ) ? $provider : 'mapbox';
+	$provider = sanitize_key( (string) ( $map['provider'] ?? 'custom' ) );
+	$out['map']['provider']     = in_array( $provider, array( 'mapbox', 'custom' ), true ) ? $provider : 'custom';
 	$out['map']['mapbox_token'] = sanitize_text_field( (string) ( $map['mapbox_token'] ?? '' ) );
 	$out['map']['mapbox_style'] = sanitize_text_field( (string) ( $map['mapbox_style'] ?? 'mapbox://styles/mapbox/dark-v11' ) );
 	$out['map']['center_lat']   = (float) ( $map['center_lat'] ?? 35.312 );

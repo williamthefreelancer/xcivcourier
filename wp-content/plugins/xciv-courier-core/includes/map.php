@@ -64,22 +64,23 @@ function xciv_core_map_config(): array {
 	);
 
 	return array(
-		'provider'    => $provider,
-		'token'       => $token,
-		'style'       => (string) ( $map['mapbox_style'] ?? 'mapbox://styles/mapbox/dark-v11' ),
-		'center'      => array(
+		'provider'         => $provider,
+		'token'            => $token,
+		'style'            => (string) ( $map['mapbox_style'] ?? 'mapbox://styles/mapbox/dark-v11' ),
+		'center'           => array(
 			(float) ( $map['center_lng'] ?? -80.744 ),
 			(float) ( $map['center_lat'] ?? 35.312 ),
 		),
-		'zoom'        => (float) ( $map['zoom'] ?? 11 ),
-		'showHubs'    => ! empty( $map['show_hubs'] ),
-		'showVenues'  => ! empty( $map['show_venues'] ),
-		'showRadius'  => ! empty( $map['show_radius'] ),
-		'hubs'        => $settings['hubs'],
-		'venues'      => xciv_core_map_venues(),
-		'radii'       => $radii,
-		'riderMode'   => (string) ( $rider['default_mode'] ?? 'car' ),
-		'i18n'        => array(
+		'zoom'             => (float) ( $map['zoom'] ?? 11 ),
+		'showHubs'         => ! empty( $map['show_hubs'] ),
+		'showVenues'       => ! empty( $map['show_venues'] ),
+		'showRadius'       => ! empty( $map['show_radius'] ),
+		'hubs'             => $settings['hubs'],
+		'venues'           => xciv_core_map_venues(),
+		'radii'            => $radii,
+		'riderMode'        => (string) ( $rider['default_mode'] ?? 'car' ),
+		'leafletImagePath' => XCIV_CORE_URI . 'assets/vendor/leaflet/images/',
+		'i18n'             => array(
 			'hub'     => __( 'Hub', 'xciv-courier-core' ),
 			'venue'   => __( 'Venue', 'xciv-courier-core' ),
 			'range'   => __( 'Rider range', 'xciv-courier-core' ),
@@ -102,21 +103,6 @@ function xciv_core_enqueue_map_assets(): void {
 	$config   = xciv_core_map_config();
 	$provider = (string) $config['provider'];
 
-	wp_register_style(
-		'xciv-core-map',
-		XCIV_CORE_URI . 'assets/css/map.css',
-		array(),
-		XCIV_CORE_VERSION
-	);
-
-	wp_register_script(
-		'xciv-core-map',
-		XCIV_CORE_URI . 'assets/js/lead-rider-map.js',
-		array(),
-		XCIV_CORE_VERSION,
-		true
-	);
-
 	if ( $provider === 'mapbox' ) {
 		wp_enqueue_style(
 			'mapbox-gl',
@@ -132,6 +118,7 @@ function xciv_core_enqueue_map_assets(): void {
 			true
 		);
 		wp_enqueue_script( 'xciv-core-map', XCIV_CORE_URI . 'assets/js/lead-rider-map.js', array( 'mapbox-gl' ), XCIV_CORE_VERSION, true );
+		wp_enqueue_style( 'xciv-core-map', XCIV_CORE_URI . 'assets/css/map.css', array( 'mapbox-gl' ), XCIV_CORE_VERSION );
 	} else {
 		wp_enqueue_style(
 			'leaflet',
@@ -147,9 +134,9 @@ function xciv_core_enqueue_map_assets(): void {
 			true
 		);
 		wp_enqueue_script( 'xciv-core-map', XCIV_CORE_URI . 'assets/js/lead-rider-map.js', array( 'leaflet' ), XCIV_CORE_VERSION, true );
+		wp_enqueue_style( 'xciv-core-map', XCIV_CORE_URI . 'assets/css/map.css', array( 'leaflet' ), XCIV_CORE_VERSION );
 	}
 
-	wp_enqueue_style( 'xciv-core-map' );
 	wp_localize_script( 'xciv-core-map', 'xcivLeadRiderMap', $config );
 }
 
