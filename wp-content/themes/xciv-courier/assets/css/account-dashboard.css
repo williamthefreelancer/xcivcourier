@@ -1394,6 +1394,15 @@ body:not(.logged-in) .woocommerce-MyAccount-navigation {
 	body.xciv-account-feed main.wp-block-group {
 		padding-top: 0.65rem !important;
 		padding-bottom: 1.5rem !important;
+		padding-left: clamp(0.75rem, 3.5vw, 1rem) !important;
+		padding-right: clamp(0.75rem, 3.5vw, 1rem) !important;
+	}
+
+	.woocommerce-account .woocommerce-MyAccount-content,
+	.xciv-feed,
+	.xciv-dash {
+		min-width: 0;
+		max-width: 100%;
 	}
 
 	.xciv-feed__top {
@@ -1410,6 +1419,24 @@ body:not(.logged-in) .woocommerce-MyAccount-navigation {
 		flex: 1 1 0;
 		text-align: center;
 		padding: 0.55rem 0.65rem;
+	}
+
+	.xciv-feed__cats,
+	.xciv-feed__filters {
+		margin-inline: -0.15rem;
+		padding-inline: 0.15rem;
+		-webkit-overflow-scrolling: touch;
+		scrollbar-width: none;
+	}
+
+	.xciv-feed__cats::-webkit-scrollbar,
+	.xciv-feed__filters::-webkit-scrollbar {
+		display: none;
+	}
+
+	.xciv-feed__carousel {
+		grid-auto-columns: minmax(15.5rem, 86vw);
+		scroll-padding-inline: 0.15rem;
 	}
 
 	.xciv-feed__place strong {

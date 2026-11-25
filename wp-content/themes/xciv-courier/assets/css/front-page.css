@@ -27,7 +27,7 @@ body.home .kt-adv-heading11_ceecba-cf {
 
 body.home .xciv-hero-deck,
 body.home .kt-adv-heading11_012143-fa {
-	margin: 0.15rem auto 0;
+	margin: 0.7rem auto 0;
 	max-width: 34rem;
 	font-family: var(--xciv-home-body) !important;
 	font-size: clamp(0.98rem, 2vw, 1.125rem) !important;
@@ -56,7 +56,7 @@ body.home .kt-adv-heading11_f3a982-83,
 body.home .kt-adv-heading11_7d236b-df,
 body.home .kt-adv-heading11_944866-e4,
 body.home .kt-adv-heading11_5fc67e-b8 {
-	margin: 0;
+	margin: 0 0 0.75rem;
 	font-family: var(--xciv-home-display);
 	font-size: clamp(1.65rem, 3.2vw, 2.15rem) !important;
 	font-weight: 600;
@@ -64,9 +64,16 @@ body.home .kt-adv-heading11_5fc67e-b8 {
 	color: var(--xciv-home-ink);
 }
 
+/* Space between section title rows and the content that follows */
+body.home .kb-row-layout-id11_do_head,
+body.home .kb-row-layout-id11_dont_head,
+body.home .kb-row-layout-id11_price_head {
+	margin-bottom: 0.35rem !important;
+}
+
 /* CTA closing line — secondary to H1, still a section anchor */
 body.home .kt-adv-heading11_76cd36-72 {
-	margin: 0 0 0.65rem;
+	margin: 0 0 0.85rem;
 	font-family: var(--xciv-home-display);
 	font-size: clamp(1.75rem, 3.5vw, 2.35rem) !important;
 	font-weight: 600;
@@ -75,7 +82,7 @@ body.home .kt-adv-heading11_76cd36-72 {
 
 body.home .kb-row-layout-id11_a30dbb-76 .has-text-align-center,
 body.home .kb-row-layout-id11_a30dbb-76 > .kt-row-column-wrap p {
-	margin: 0 auto;
+	margin: 0.15rem auto 0;
 	max-width: 32rem;
 	color: var(--xciv-home-muted);
 	line-height: 1.5;
@@ -84,7 +91,7 @@ body.home .kb-row-layout-id11_a30dbb-76 > .kt-row-column-wrap p {
 /* —— Cards: restore surfaces (Kadence emits padding as px) + tight title/body —— */
 body.home [class*="kadence-column11_card_"] > .kt-inside-inner-col {
 	display: grid;
-	gap: 0.55rem;
+	gap: 0.45rem;
 	align-content: start;
 	grid-template-rows: auto auto 1fr;
 	min-height: 8.25rem;
@@ -166,7 +173,7 @@ body.home .kadence-column11_card_dont4 > .kt-inside-inner-col::before {
 
 body.home [class*="kadence-column11_card_"] .wp-block-kadence-advancedheading,
 body.home [class*="kadence-column11_card_"] h4 {
-	margin: 0;
+	margin: 0.15rem 0 0;
 	font-family: var(--xciv-home-body);
 	font-size: 1rem;
 	font-weight: 600;
@@ -176,7 +183,7 @@ body.home [class*="kadence-column11_card_"] h4 {
 }
 
 body.home [class*="kadence-column11_card_"] p {
-	margin: 0;
+	margin: 0.35rem 0 0;
 	color: var(--xciv-home-muted);
 	font-size: 0.92rem;
 	line-height: 1.45;
@@ -467,9 +474,73 @@ body.home .xciv-booking-open:focus-visible {
 	outline-offset: 3px;
 }
 
+@media (max-width: 899px) {
+	body.home .kt-row-column-wrap.kt-has-2-columns,
+	body.home .kt-row-column-wrap.kt-has-3-columns,
+	body.home .kt-row-column-wrap.kt-has-4-columns {
+		grid-template-columns: 1fr !important;
+		gap: 0.75rem !important;
+	}
+
+	body.home .kt-row-column-wrap.kt-has-2-columns > .wp-block-kadence-column,
+	body.home .kt-row-column-wrap.kt-has-3-columns > .wp-block-kadence-column,
+	body.home .kt-row-column-wrap.kt-has-4-columns > .wp-block-kadence-column,
+	body.home [class*="kadence-column11_card_"] {
+		width: 100% !important;
+		max-width: 100% !important;
+		flex: 1 1 100% !important;
+	}
+
+	body.home .xciv-pricing {
+		padding-inline: clamp(0.85rem, 3.5vw, 1.25rem);
+	}
+
+	body.home .xciv-plan,
+	body.home .xciv-plan.is-featured {
+		padding: 1.25rem 1.1rem 1.15rem;
+	}
+
+	body.home [class*="kadence-column11_card_"] > .kt-inside-inner-col {
+		min-height: 0;
+		padding: 1.15rem 1.1rem !important;
+	}
+}
+
+@media (min-width: 600px) and (max-width: 899px) {
+	/* Keep do/don't card pairs as two columns on tablet */
+	body.home .kt-row-column-wrap.kt-has-2-columns:has([class*="kadence-column11_card_"]) {
+		grid-template-columns: 1fr 1fr !important;
+	}
+}
+
 @media (max-width: 781px) {
+	body.home .kt-adv-heading11_ceecba-cf {
+		font-size: clamp(2.15rem, 9vw, 2.85rem);
+	}
+
+	body.home .xciv-hero-deck,
+	body.home .kt-adv-heading11_012143-fa {
+		font-size: 0.98rem !important;
+		padding-inline: 0.15rem;
+	}
+
 	body.home [class*="kadence-column11_card_"] .wp-block-kadence-advancedheading,
 	body.home [class*="kadence-column11_card_"] h4 {
-		font-size: 1.1rem;
+		font-size: 1.05rem;
+	}
+
+	body.home .xciv-plan__amount {
+		font-size: clamp(2.75rem, 14vw, 3.6rem);
+	}
+
+	body.home .xciv-booking-open {
+		width: 100%;
+		text-align: center;
+	}
+}
+
+@media (max-width: 479px) {
+	body.home .kt-row-column-wrap.kt-has-2-columns:has([class*="kadence-column11_card_"]) {
+		grid-template-columns: 1fr !important;
 	}
 }

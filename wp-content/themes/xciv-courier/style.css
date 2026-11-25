@@ -4,7 +4,7 @@ Theme URI: https://xcivcourier.com
 Author: SUPR XCIV PLATFORM HOLDINGS LLC
 Author URI: mailto:support@xcivcourier.com
 Description: Block theme for XCIV Courier. Site layouts via the Site Editor + Kadence Blocks; custom booking form block only.
-Version: 0.9.1
+Version: 0.9.3
 Requires at least: 6.4
 Tested up to: 6.8
 Requires PHP: 8.1
@@ -12,11 +12,24 @@ Text Domain: xciv-courier
 Tags: full-site-editing, block-themes, block-patterns
 */
 
+/* Keep pages from sideways scrolling on small screens */
+html {
+	overflow-x: clip;
+}
+
+body {
+	overflow-x: clip;
+}
+
 /* Header: brand + fulfillment tabs left; cart + profile right */
 header .wp-block-group.is-layout-flex {
 	align-items: center;
 	column-gap: 1rem;
 	row-gap: 0.5rem;
+}
+
+header .xciv-header-tabs__label-short {
+	display: none;
 }
 
 header .xciv-header-left {
@@ -562,12 +575,16 @@ header .xciv-header-profile__item--danger:focus-visible {
 	header .xciv-rider-modes__label {
 		display: none;
 	}
+
+	header .xciv-header-tabs__tab {
+		padding: 0.5rem 0.85rem;
+		font-size: 0.82rem;
+	}
 }
 
 @media (max-width: 900px) {
-	header .xciv-header-left {
-		flex-wrap: wrap;
-		row-gap: 0.45rem;
+	header .xciv-header-brand__logo {
+		height: 2.1rem;
 	}
 
 	header .xciv-rider-modes__text {
@@ -578,23 +595,25 @@ header .xciv-header-profile__item--danger:focus-visible {
 		padding: 0.4rem;
 		justify-content: center;
 	}
-}
 
-@media (max-width: 781px) {
-	header .xciv-header-tabs__tab {
-		font-size: 0.78rem;
-		padding: 0.48rem 0.72rem;
-		gap: 0.3rem;
+	header .xciv-header-tabs__label-full {
+		display: none;
 	}
 
-	header .xciv-header-tabs__icon {
-		width: 13px;
-		height: 13px;
+	header .xciv-header-tabs__label-short {
+		display: inline;
+	}
+
+	header .xciv-header-tabs__tab {
+		padding: 0.48rem 0.7rem;
+		font-size: 0.8rem;
+		gap: 0.3rem;
 	}
 
 	header .xciv-header-profile__trigger {
 		width: 2.2rem;
 		height: 2.2rem;
+		min-height: 2.2rem;
 		padding: 0;
 		gap: 0;
 		justify-content: center;
@@ -608,6 +627,89 @@ header .xciv-header-profile__item--danger:focus-visible {
 	header .xciv-header-profile__avatar {
 		width: 1.55rem;
 		height: 1.55rem;
+	}
+}
+
+/* Phone / small tablet: stack controls under the brand row */
+@media (max-width: 720px) {
+	header > .wp-block-group {
+		padding-top: 0.65rem !important;
+		padding-bottom: 0.65rem !important;
+	}
+
+	header .wp-block-group:has(> .xciv-header-left) {
+		display: grid !important;
+		grid-template-columns: minmax(0, 1fr) auto;
+		grid-template-areas:
+			"brand right"
+			"tabs tabs"
+			"modes modes";
+		align-items: center;
+		column-gap: 0.65rem;
+		row-gap: 0.5rem;
+		width: 100%;
+	}
+
+	header .xciv-header-left {
+		display: contents;
+	}
+
+	header .xciv-header-brand {
+		grid-area: brand;
+		justify-self: start;
+	}
+
+	header .xciv-header-tabs {
+		grid-area: tabs;
+		width: 100%;
+		justify-self: stretch;
+	}
+
+	header .xciv-header-tabs__tab {
+		width: 100%;
+		min-width: 0;
+	}
+
+	header .xciv-header-tabs__icon {
+		width: 13px;
+		height: 13px;
+	}
+
+	header .xciv-rider-modes {
+		grid-area: modes;
+		width: 100%;
+		justify-content: stretch;
+	}
+
+	header .xciv-rider-modes__list {
+		width: 100%;
+		justify-content: space-between;
+	}
+
+	header .xciv-rider-modes__btn {
+		flex: 1 1 0;
+	}
+
+	header .xciv-header-right {
+		grid-area: right;
+		margin-left: 0;
+		justify-self: end;
+	}
+
+	header .xciv-header-profile__menu {
+		min-width: min(15.5rem, calc(100vw - 1.5rem));
+		right: 0;
+	}
+}
+
+@media (max-width: 480px) {
+	header .xciv-header-brand__logo {
+		height: 1.9rem;
+	}
+
+	header .xciv-header-tabs__tab {
+		padding: 0.46rem 0.45rem;
+		font-size: 0.76rem;
 	}
 }
 
@@ -689,4 +791,40 @@ header .xciv-header-profile__item--danger:focus-visible {
 	text-overflow: ellipsis;
 	white-space: nowrap;
 	max-width: min(70vw, 28rem);
+}
+
+/* Shared page shell — tablet / phone */
+@media (max-width: 899px) {
+	main.wp-block-group {
+		padding-left: clamp(0.85rem, 3.5vw, 1.25rem) !important;
+		padding-right: clamp(0.85rem, 3.5vw, 1.25rem) !important;
+	}
+
+	.xciv-breadcrumbs__inner {
+		padding-inline: clamp(0.85rem, 3.5vw, 1.25rem);
+	}
+
+	footer.wp-block-template-part > .wp-block-group,
+	footer > .wp-block-group {
+		padding-left: clamp(0.85rem, 3.5vw, 1.25rem);
+		padding-right: clamp(0.85rem, 3.5vw, 1.25rem);
+	}
+
+	footer p {
+		max-width: 36rem;
+		line-height: 1.45;
+	}
+}
+
+@media (max-width: 639px) {
+	main.wp-block-group {
+		padding-top: clamp(1rem, 4vw, 1.75rem) !important;
+		padding-bottom: clamp(1.25rem, 5vw, 2rem) !important;
+	}
+
+	.wp-block-post-title {
+		font-size: clamp(1.65rem, 7vw, 2rem);
+		line-height: 1.15;
+		word-break: break-word;
+	}
 }
