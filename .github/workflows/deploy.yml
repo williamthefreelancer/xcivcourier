@@ -45,6 +45,7 @@ jobs:
           port: 22
           local_path: './wp-content/plugins/xciv-courier-core/*'
           remote_path: ${{ secrets.FTP_REMOTE_PATH }}/wp-content/plugins/xciv-courier-core/
-          sftp_only: true
+          # false so SSH can mkdir the plugin folder on first deploy
+          sftp_only: false
           delete_remote_files: false
           sftpArgs: '-o StrictHostKeyChecking=no'
