@@ -94,6 +94,11 @@ body.xciv-account-feed .entry-content > * {
 	}
 }
 
+/* Guests: never show account endpoint nav (login form only). */
+body:not(.logged-in) .woocommerce-MyAccount-navigation {
+	display: none !important;
+}
+
 .woocommerce-account .woocommerce-MyAccount-navigation {
 	margin: 0 0 1rem;
 	padding: 0.4rem;

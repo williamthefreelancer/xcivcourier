@@ -296,7 +296,7 @@ function xciv_breadcrumbs_after_header( string $block_content, array $block ): s
 		return $block_content;
 	}
 
-	// Front page header is already stripped; still guard here.
+	// No breadcrumbs on the front page (marketing home).
 	if ( is_front_page() || $block_content === '' ) {
 		return $block_content;
 	}

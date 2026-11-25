@@ -151,11 +151,36 @@ function xciv_header_profile_render(): string {
 		: __( 'Sign in', 'xciv-courier' );
 
 	ob_start();
+
+	// Guests: direct Sign in link only — no account menu / endpoints.
+	if ( ! $logged_in ) {
+		?>
+		<div class="xciv-header-profile xciv-header-profile--guest">
+			<a
+				class="xciv-header-profile__trigger"
+				href="<?php echo esc_url( $urls['account'] ); ?>"
+				aria-label="<?php echo esc_attr( $label ); ?>"
+			>
+				<span class="xciv-header-profile__avatar" aria-hidden="true">
+					<svg class="xciv-header-profile__icon" width="18" height="18" viewBox="0 0 24 24" fill="none" focusable="false">
+						<circle cx="12" cy="8.15" r="3.35" fill="currentColor"/>
+						<path
+							fill="currentColor"
+							d="M5.2 18.7c1.05-3.2 3.7-5.05 6.8-5.05s5.75 1.85 6.8 5.05c.2.6-.25 1.25-.9 1.25H6.1c-.65 0-1.1-.65-.9-1.25Z"
+						/>
+					</svg>
+				</span>
+				<span class="xciv-header-profile__label"><?php echo esc_html( $trigger_label ); ?></span>
+			</a>
+		</div>
+		<?php
+		return (string) ob_get_clean();
+	}
 	?>
 	<div class="xciv-header-profile" data-xciv-header-profile>
 		<button
 			type="button"
-			class="xciv-header-profile__trigger<?php echo $logged_in ? ' xciv-header-profile__trigger--user' : ''; ?>"
+			class="xciv-header-profile__trigger xciv-header-profile__trigger--user"
 			data-xciv-header-profile-trigger
 			aria-expanded="false"
 			aria-haspopup="true"
@@ -163,7 +188,7 @@ function xciv_header_profile_render(): string {
 			aria-label="<?php echo esc_attr( $label ); ?>"
 		>
 			<span class="xciv-header-profile__avatar" aria-hidden="true">
-				<?php if ( $logged_in && $initials !== '' ) : ?>
+				<?php if ( $initials !== '' ) : ?>
 					<span class="xciv-header-profile__initials"><?php echo esc_html( $initials ); ?></span>
 				<?php else : ?>
 					<svg class="xciv-header-profile__icon" width="18" height="18" viewBox="0 0 24 24" fill="none" focusable="false">
@@ -189,51 +214,44 @@ function xciv_header_profile_render(): string {
 			role="menu"
 			aria-label="<?php echo esc_attr__( 'Account', 'xciv-courier' ); ?>"
 		>
-			<?php if ( $logged_in ) : ?>
-				<div class="xciv-header-profile__meta" role="presentation">
-					<span class="xciv-header-profile__meta-avatar" aria-hidden="true">
-						<?php if ( $initials !== '' ) : ?>
-							<span class="xciv-header-profile__initials"><?php echo esc_html( $initials ); ?></span>
-						<?php else : ?>
-							<svg class="xciv-header-profile__icon" width="18" height="18" viewBox="0 0 24 24" fill="none" focusable="false">
-								<circle cx="12" cy="8.15" r="3.35" fill="currentColor"/>
-								<path
-									fill="currentColor"
-									d="M5.2 18.7c1.05-3.2 3.7-5.05 6.8-5.05s5.75 1.85 6.8 5.05c.2.6-.25 1.25-.9 1.25H6.1c-.65 0-1.1-.65-.9-1.25Z"
-								/>
-							</svg>
-						<?php endif; ?>
-					</span>
-					<span class="xciv-header-profile__meta-text">
-						<span class="xciv-header-profile__name"><?php echo esc_html( $display_name ); ?></span>
-						<?php if ( $email !== '' ) : ?>
-							<span class="xciv-header-profile__email"><?php echo esc_html( $email ); ?></span>
-						<?php endif; ?>
-					</span>
-				</div>
-				<a class="xciv-header-profile__item" role="menuitem" href="<?php echo esc_url( $urls['home'] ); ?>">
-					<?php echo xciv_header_profile_icon( 'home' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
-					<span><?php esc_html_e( 'Home', 'xciv-courier' ); ?></span>
-				</a>
-				<a class="xciv-header-profile__item" role="menuitem" href="<?php echo esc_url( $urls['orders'] ); ?>">
-					<?php echo xciv_header_profile_icon( 'sits' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
-					<span><?php esc_html_e( 'Sits', 'xciv-courier' ); ?></span>
-				</a>
-				<a class="xciv-header-profile__item" role="menuitem" href="<?php echo esc_url( $urls['account'] ); ?>">
-					<?php echo xciv_header_profile_icon( 'account' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
-					<span><?php esc_html_e( 'Account', 'xciv-courier' ); ?></span>
-				</a>
-				<div class="xciv-header-profile__divider" role="separator"></div>
-				<a class="xciv-header-profile__item xciv-header-profile__item--danger" role="menuitem" href="<?php echo esc_url( $urls['logout'] ); ?>">
-					<?php echo xciv_header_profile_icon( 'logout' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
-					<span><?php esc_html_e( 'Log out', 'xciv-courier' ); ?></span>
-				</a>
-			<?php else : ?>
-				<a class="xciv-header-profile__item xciv-header-profile__item--primary" role="menuitem" href="<?php echo esc_url( $urls['account'] ); ?>">
-					<?php echo xciv_header_profile_icon( 'signin' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
-					<span><?php esc_html_e( 'Sign in', 'xciv-courier' ); ?></span>
-				</a>
-			<?php endif; ?>
+			<div class="xciv-header-profile__meta" role="presentation">
+				<span class="xciv-header-profile__meta-avatar" aria-hidden="true">
+					<?php if ( $initials !== '' ) : ?>
+						<span class="xciv-header-profile__initials"><?php echo esc_html( $initials ); ?></span>
+					<?php else : ?>
+						<svg class="xciv-header-profile__icon" width="18" height="18" viewBox="0 0 24 24" fill="none" focusable="false">
+							<circle cx="12" cy="8.15" r="3.35" fill="currentColor"/>
+							<path
+								fill="currentColor"
+								d="M5.2 18.7c1.05-3.2 3.7-5.05 6.8-5.05s5.75 1.85 6.8 5.05c.2.6-.25 1.25-.9 1.25H6.1c-.65 0-1.1-.65-.9-1.25Z"
+							/>
+						</svg>
+					<?php endif; ?>
+				</span>
+				<span class="xciv-header-profile__meta-text">
+					<span class="xciv-header-profile__name"><?php echo esc_html( $display_name ); ?></span>
+					<?php if ( $email !== '' ) : ?>
+						<span class="xciv-header-profile__email"><?php echo esc_html( $email ); ?></span>
+					<?php endif; ?>
+				</span>
+			</div>
+			<a class="xciv-header-profile__item" role="menuitem" href="<?php echo esc_url( $urls['home'] ); ?>">
+				<?php echo xciv_header_profile_icon( 'home' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+				<span><?php esc_html_e( 'Home', 'xciv-courier' ); ?></span>
+			</a>
+			<a class="xciv-header-profile__item" role="menuitem" href="<?php echo esc_url( $urls['orders'] ); ?>">
+				<?php echo xciv_header_profile_icon( 'sits' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+				<span><?php esc_html_e( 'Sits', 'xciv-courier' ); ?></span>
+			</a>
+			<a class="xciv-header-profile__item" role="menuitem" href="<?php echo esc_url( $urls['account'] ); ?>">
+				<?php echo xciv_header_profile_icon( 'account' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+				<span><?php esc_html_e( 'Account', 'xciv-courier' ); ?></span>
+			</a>
+			<div class="xciv-header-profile__divider" role="separator"></div>
+			<a class="xciv-header-profile__item xciv-header-profile__item--danger" role="menuitem" href="<?php echo esc_url( $urls['logout'] ); ?>">
+				<?php echo xciv_header_profile_icon( 'logout' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+				<span><?php esc_html_e( 'Log out', 'xciv-courier' ); ?></span>
+			</a>
 		</div>
 	</div>
 	<?php

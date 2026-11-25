@@ -184,23 +184,3 @@ function xciv_courier_render_booking_modal(): void {
 	<?php
 }
 add_action( 'wp_footer', 'xciv_courier_render_booking_modal', 5 );
-
-/**
- * Never render the site header on the homepage (even if Site Editor re-adds it).
- *
- * @param string               $block_content Block HTML.
- * @param array<string, mixed> $block         Parsed block.
- */
-function xciv_courier_omit_front_page_header( string $block_content, array $block ): string {
-	if ( ( $block['blockName'] ?? '' ) !== 'core/template-part' ) {
-		return $block_content;
-	}
-
-	$slug = (string) ( $block['attrs']['slug'] ?? '' );
-	if ( $slug === 'header' && is_front_page() ) {
-		return '';
-	}
-
-	return $block_content;
-}
-add_filter( 'render_block', 'xciv_courier_omit_front_page_header', 10, 2 );

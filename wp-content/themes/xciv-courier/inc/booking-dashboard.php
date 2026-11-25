@@ -324,12 +324,16 @@ function xciv_booking_account_body_class( array $classes ): array {
 add_filter( 'body_class', 'xciv_booking_account_body_class' );
 
 /**
- * Slim account nav for a service-app feel.
+ * Slim account nav for a service-app feel. Guests see no account endpoints.
  *
  * @param array<string, string> $items Menu items.
  * @return array<string, string>
  */
 function xciv_booking_account_menu_items( array $items ): array {
+	if ( ! is_user_logged_in() ) {
+		return array();
+	}
+
 	$keep = array( 'dashboard', 'orders', 'edit-account', 'customer-logout' );
 	$out  = array();
 	foreach ( $keep as $key ) {
@@ -354,6 +358,30 @@ function xciv_booking_account_menu_items( array $items ): array {
 	return $out ?: $items;
 }
 add_filter( 'woocommerce_account_menu_items', 'xciv_booking_account_menu_items', 40 );
+
+/**
+ * Send logged-out visitors away from My Account endpoints (orders, account, etc.).
+ * Base /my-account/ stays available for the Sign in form.
+ */
+function xciv_booking_guard_account_endpoints(): void {
+	if ( is_admin() || is_user_logged_in() || ! function_exists( 'is_account_page' ) || ! is_account_page() ) {
+		return;
+	}
+
+	$endpoint = function_exists( 'WC' ) && WC()->query ? (string) WC()->query->get_current_endpoint() : '';
+	if ( $endpoint === '' ) {
+		return;
+	}
+
+	$account = function_exists( 'wc_get_page_permalink' ) ? (string) wc_get_page_permalink( 'myaccount' ) : '';
+	if ( $account === '' ) {
+		$account = wp_login_url();
+	}
+
+	wp_safe_redirect( $account );
+	exit;
+}
+add_action( 'template_redirect', 'xciv_booking_guard_account_endpoints', 20 );
 
 /**
  * Customer booking orders, newest first.

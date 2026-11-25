@@ -179,6 +179,11 @@ header .xciv-header-profile {
 	align-items: center;
 }
 
+header a.xciv-header-profile__trigger {
+	text-decoration: none;
+	box-sizing: border-box;
+}
+
 header .xciv-header-profile__trigger {
 	appearance: none;
 	display: inline-flex;
