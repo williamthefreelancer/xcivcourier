@@ -15,7 +15,9 @@ wp-config.php
 
 # Third-party themes/plugins (Kadence installed on the server / XAMPP)
 /wp-content/themes/twenty*/
-/wp-content/plugins/
+/wp-content/plugins/*
+!/wp-content/plugins/xciv-courier-core/
+!/wp-content/plugins/xciv-courier-core/**
 /wp-content/index.php
 /wp-content/advanced-cache.php
 /wp-content/wp-cache-config.php

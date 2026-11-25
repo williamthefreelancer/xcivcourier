@@ -1,0 +1,224 @@
+/* XCIV Courier Core — admin shell */
+
+.xciv-admin {
+	--xciv-ink: #f2efe8;
+	--xciv-muted: #9aa3ad;
+	--xciv-accent: #c4a35a;
+	--xciv-panel: #12161b;
+	--xciv-line: rgba(242, 239, 232, 0.1);
+	max-width: 1100px;
+	margin: 1.25rem 1rem 2rem 0;
+	color: #1d2327;
+}
+
+.xciv-admin__hero {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: flex-end;
+	justify-content: space-between;
+	gap: 1rem;
+	padding: 1.35rem 1.5rem;
+	border-radius: 1rem;
+	background:
+		radial-gradient(120% 140% at 0% 0%, rgba(196, 163, 90, 0.22), transparent 55%),
+		linear-gradient(160deg, #0c0f12 0%, #171c22 100%);
+	color: var(--xciv-ink);
+	margin-bottom: 1.25rem;
+}
+
+.xciv-admin__eyebrow {
+	margin: 0 0 0.25rem;
+	font-size: 0.72rem;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	color: var(--xciv-accent);
+	font-weight: 600;
+}
+
+.xciv-admin__hero h1 {
+	margin: 0;
+	padding: 0;
+	color: var(--xciv-ink);
+	font-size: 1.75rem;
+	font-weight: 600;
+	line-height: 1.15;
+}
+
+.xciv-admin__nav {
+	display: inline-flex;
+	flex-wrap: wrap;
+	gap: 0.35rem;
+	padding: 0.2rem;
+	border-radius: 999px;
+	background: rgba(242, 239, 232, 0.06);
+	border: 1px solid rgba(242, 239, 232, 0.12);
+}
+
+.xciv-admin__nav-link {
+	display: inline-flex;
+	align-items: center;
+	padding: 0.45rem 0.9rem;
+	border-radius: 999px;
+	color: var(--xciv-muted);
+	text-decoration: none;
+	font-weight: 600;
+	font-size: 0.86rem;
+}
+
+.xciv-admin__nav-link:hover {
+	color: var(--xciv-ink);
+}
+
+.xciv-admin__nav-link.is-active {
+	background: var(--xciv-ink);
+	color: #0c0f12;
+}
+
+.xciv-admin__stats {
+	display: grid;
+	grid-template-columns: repeat(4, minmax(0, 1fr));
+	gap: 0.85rem;
+	margin-bottom: 1.1rem;
+}
+
+.xciv-admin__stat {
+	padding: 1rem 1.1rem;
+	border: 1px solid #dcdcde;
+	border-radius: 0.85rem;
+	background: #fff;
+}
+
+.xciv-admin__stat-label {
+	display: block;
+	font-size: 0.72rem;
+	letter-spacing: 0.06em;
+	text-transform: uppercase;
+	color: #646970;
+	font-weight: 600;
+}
+
+.xciv-admin__stat-value {
+	display: block;
+	margin: 0.35rem 0 0.15rem;
+	font-size: 1.85rem;
+	line-height: 1;
+	color: #0c0f12;
+}
+
+.xciv-admin__stat-meta {
+	font-size: 0.8rem;
+	color: #646970;
+}
+
+.xciv-admin__grid {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 0.85rem;
+}
+
+.xciv-admin__card {
+	padding: 1.15rem 1.25rem;
+	border: 1px solid #dcdcde;
+	border-radius: 0.85rem;
+	background: #fff;
+	margin-bottom: 0.85rem;
+}
+
+.xciv-admin__card h2 {
+	margin: 0 0 0.45rem;
+	font-size: 1.05rem;
+}
+
+.xciv-admin__card p {
+	margin-top: 0;
+	color: #50575e;
+}
+
+.xciv-admin__pills {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.4rem;
+	margin: 0 0 1rem;
+	padding: 0;
+	list-style: none;
+}
+
+.xciv-admin__pills li {
+	padding: 0.3rem 0.7rem;
+	border-radius: 999px;
+	font-size: 0.8rem;
+	font-weight: 600;
+}
+
+.xciv-admin__pills li.is-on {
+	background: rgba(196, 163, 90, 0.2);
+	color: #6b5220;
+}
+
+.xciv-admin__pills li.is-off {
+	background: #f0f0f1;
+	color: #8c8f94;
+	text-decoration: line-through;
+}
+
+.xciv-admin__hubs {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	display: grid;
+	gap: 0.45rem;
+}
+
+.xciv-admin__hubs li {
+	display: flex;
+	justify-content: space-between;
+	gap: 1rem;
+	padding: 0.55rem 0.7rem;
+	border-radius: 0.55rem;
+	background: #f6f7f7;
+}
+
+.xciv-admin__check {
+	display: flex;
+	align-items: center;
+	gap: 0.45rem;
+	margin: 0.35rem 0;
+	font-weight: 500;
+}
+
+.xciv-admin__hub-row {
+	display: grid;
+	grid-template-columns: 1.4fr 0.7fr 0.9fr 0.9fr;
+	gap: 0.55rem;
+	margin-bottom: 0.65rem;
+	padding-bottom: 0.65rem;
+	border-bottom: 1px solid #f0f0f1;
+}
+
+.xciv-admin__hub-row label {
+	display: grid;
+	gap: 0.2rem;
+	font-size: 0.78rem;
+	font-weight: 600;
+	color: #646970;
+}
+
+.xciv-admin__form .large-text {
+	max-width: 40rem;
+}
+
+@media (max-width: 960px) {
+	.xciv-admin__stats,
+	.xciv-admin__grid,
+	.xciv-admin__hub-row {
+		grid-template-columns: 1fr 1fr;
+	}
+}
+
+@media (max-width: 640px) {
+	.xciv-admin__stats,
+	.xciv-admin__grid,
+	.xciv-admin__hub-row {
+		grid-template-columns: 1fr;
+	}
+}

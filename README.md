@@ -38,8 +38,8 @@ Customize the booking UI in:
 
 ## Deploy (DreamHost)
 
-Push theme changes to `main` → [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml) SFTP-deploys the theme.
+Push to `main` → [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml) SFTP-deploys the theme and **XCIV Courier Core** plugin.
 
 Secrets: `FTP_SERVER`, `FTP_USERNAME`, `FTP_PASSWORD`, `FTP_REMOTE_PATH`.
 
-Install **Kadence Blocks** on production once (not deployed by this workflow).
+Install **Kadence Blocks** on production once (not deployed by this workflow). Activate **XCIV Courier Core** after first deploy (`Plugins → XCIV Courier Core`). Optional: `define( 'XCIV_MAPBOX_TOKEN', 'pk.…' );` in `wp-config.php`, or set the token under **XCIV Courier → Map**. Shortcode: `[xciv_lead_rider_map]`.

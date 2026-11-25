@@ -1577,6 +1577,12 @@ function xciv_booking_render_dashboard(): void {
 			</label>
 		</header>
 
+		<?php if ( shortcode_exists( 'xciv_lead_rider_map' ) ) : ?>
+			<div class="xciv-feed__map">
+				<?php echo do_shortcode( '[xciv_lead_rider_map height="360px"]' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+			</div>
+		<?php endif; ?>
+
 		<nav class="xciv-feed__cats" aria-label="<?php esc_attr_e( 'Service types', 'xciv-courier' ); ?>">
 			<button type="button" class="xciv-feed__cat is-active" data-xciv-cat="all">
 				<span class="xciv-feed__cat-icon" aria-hidden="true">◎</span>

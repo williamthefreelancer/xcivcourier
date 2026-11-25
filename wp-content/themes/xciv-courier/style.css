@@ -39,19 +39,94 @@ header .xciv-header-brand:focus-visible {
 	border-radius: 0.35rem;
 }
 
-header .xciv-header-brand__mark {
-	width: 2.35rem;
-	height: 2.35rem;
-	object-fit: cover;
-	border-radius: 0.35rem;
-	border: 1px solid rgba(242, 239, 232, 0.14);
-	background: #000;
-}
-
 header .xciv-header-brand__logo {
 	width: auto;
 	height: 2.55rem;
 	display: block;
+}
+
+/* Lead rider mode chips (visible with Lead Delivery) */
+header .xciv-rider-modes {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 0.45rem 0.65rem;
+	min-width: 0;
+}
+
+header .xciv-rider-modes[hidden] {
+	display: none !important;
+}
+
+header .xciv-rider-modes__label {
+	font-size: 0.72rem;
+	font-weight: 600;
+	letter-spacing: 0.06em;
+	text-transform: uppercase;
+	color: var(--wp--preset--color--muted, #9aa3ad);
+}
+
+header .xciv-rider-modes__list {
+	display: inline-flex;
+	flex-wrap: wrap;
+	gap: 0.28rem;
+	padding: 0.18rem;
+	border: 1px solid rgba(242, 239, 232, 0.14);
+	border-radius: 999px;
+	background: rgba(12, 15, 18, 0.55);
+}
+
+header .xciv-rider-modes__btn {
+	appearance: none;
+	display: inline-flex;
+	align-items: center;
+	gap: 0.32rem;
+	margin: 0;
+	padding: 0.38rem 0.72rem;
+	border: 0;
+	border-radius: 999px;
+	background: transparent;
+	color: var(--wp--preset--color--muted, #9aa3ad);
+	font: inherit;
+	font-size: 0.78rem;
+	font-weight: 600;
+	cursor: pointer;
+	transition: color 180ms ease, background 180ms ease;
+}
+
+header .xciv-rider-modes__btn:hover {
+	color: var(--wp--preset--color--ink, #f2efe8);
+}
+
+header .xciv-rider-modes__btn.is-active {
+	background: linear-gradient(180deg, #f7f3ea 0%, var(--wp--preset--color--ink, #f2efe8) 100%);
+	color: var(--wp--preset--color--accent-ink, #0c0f12);
+	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.28);
+}
+
+header .xciv-rider-modes__btn:focus-visible {
+	outline: 2px solid var(--wp--preset--color--accent, #c4a35a);
+	outline-offset: 2px;
+}
+
+header .xciv-rider-modes__icon {
+	flex-shrink: 0;
+	opacity: 0.9;
+}
+
+header .xciv-rider-modes__hint {
+	flex: 1 1 12rem;
+	margin: 0;
+	font-size: 0.72rem;
+	line-height: 1.35;
+	color: var(--wp--preset--color--muted, #9aa3ad);
+	max-width: 22rem;
+}
+
+@media (max-width: 900px) {
+	header .xciv-rider-modes__hint {
+		display: none;
+	}
 }
 
 header .xciv-header-tabs {

@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - 'wp-content/themes/xciv-courier/**'
+      - 'wp-content/plugins/xciv-courier-core/**'
       - '.github/workflows/deploy.yml'
   workflow_dispatch:
 
@@ -14,7 +15,7 @@ concurrency:
 
 jobs:
   deploy:
-    name: Deploy theme
+    name: Deploy theme + core plugin
     runs-on: ubuntu-latest
     timeout-minutes: 15
 
@@ -31,6 +32,19 @@ jobs:
           port: 22
           local_path: './wp-content/themes/xciv-courier/*'
           remote_path: ${{ secrets.FTP_REMOTE_PATH }}/wp-content/themes/xciv-courier/
+          sftp_only: true
+          delete_remote_files: false
+          sftpArgs: '-o StrictHostKeyChecking=no'
+
+      - name: Deploy XCIV Courier Core plugin
+        uses: wlixcc/SFTP-Deploy-Action@v1.2.4
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          port: 22
+          local_path: './wp-content/plugins/xciv-courier-core/*'
+          remote_path: ${{ secrets.FTP_REMOTE_PATH }}/wp-content/plugins/xciv-courier-core/
           sftp_only: true
           delete_remote_files: false
           sftpArgs: '-o StrictHostKeyChecking=no'

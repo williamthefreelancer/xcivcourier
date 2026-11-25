@@ -6,11 +6,6 @@ body.xciv-account-feed header .wp-block-group {
 	padding-bottom: 0.65rem !important;
 }
 
-body.xciv-account-feed header .xciv-header-brand__mark {
-	width: 2.1rem;
-	height: 2.1rem;
-}
-
 body.xciv-account-feed header .xciv-header-brand__logo {
 	height: 2.25rem;
 }

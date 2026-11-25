@@ -261,22 +261,21 @@ function xciv_header_profile_render(): string {
 add_shortcode( 'xciv_header_profile', 'xciv_header_profile_render' );
 
 /**
- * Theme brand asset URLs (site mark + holdings logo).
+ * Theme brand asset URLs (logo only in header).
  *
- * @return array{mark:string,logo:string,home:string}
+ * @return array{logo:string,home:string}
  */
 function xciv_header_brand_assets(): array {
 	$urls = xciv_header_profile_urls();
 
 	return array(
-		'mark' => XCIV_COURIER_URI . '/assets/img/site-icon.jpg',
 		'logo' => XCIV_COURIER_URI . '/assets/img/xciv-logo.svg',
 		'home' => $urls['home'],
 	);
 }
 
 /**
- * Header brand mark + logo (replaces site title).
+ * Header logo (site icon mark removed — favicon still uses site-icon.jpg).
  */
 function xciv_header_brand_render(): string {
 	$assets = xciv_header_brand_assets();
@@ -284,14 +283,6 @@ function xciv_header_brand_render(): string {
 	ob_start();
 	?>
 	<a class="xciv-header-brand" href="<?php echo esc_url( $assets['home'] ); ?>" aria-label="<?php esc_attr_e( 'XCIV Courier home', 'xciv-courier' ); ?>">
-		<img
-			class="xciv-header-brand__mark"
-			src="<?php echo esc_url( $assets['mark'] ); ?>"
-			width="40"
-			height="40"
-			alt=""
-			decoding="async"
-		>
 		<img
 			class="xciv-header-brand__logo"
 			src="<?php echo esc_url( $assets['logo'] ); ?>"
