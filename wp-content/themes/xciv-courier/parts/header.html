@@ -1,0 +1,59 @@
+<!-- wp:group {"style":{"spacing":{"padding":{"top":"0.75rem","bottom":"0.75rem"}},"border":{"bottom":{"color":"var:preset|color|muted","width":"1px","style":"solid"}}},"layout":{"type":"constrained","contentSize":"78rem"}} -->
+<div class="wp-block-group" style="border-bottom-color:var(--wp--preset--color--muted);border-bottom-style:solid;border-bottom-width:1px;padding-top:0.75rem;padding-bottom:0.75rem">
+	<!-- wp:group {"layout":{"type":"flex","flexWrap":"nowrap","justifyContent":"space-between","verticalAlignment":"center"}} -->
+	<div class="wp-block-group">
+		<!-- wp:group {"className":"xciv-header-left","layout":{"type":"flex","flexWrap":"wrap","justifyContent":"left","verticalAlignment":"center"},"style":{"spacing":{"blockGap":"1rem"}}} -->
+		<div class="wp-block-group xciv-header-left">
+			<!-- wp:shortcode -->
+			[xciv_header_brand]
+			<!-- /wp:shortcode -->
+
+			<!-- wp:html -->
+			<nav class="xciv-header-tabs" role="tablist" aria-label="Fulfillment mode" data-xciv-header-tabs>
+				<span class="xciv-header-tabs__thumb" data-xciv-header-thumb aria-hidden="true"></span>
+				<button
+					type="button"
+					class="xciv-header-tabs__tab is-active"
+					role="tab"
+					aria-selected="true"
+					data-xciv-fulfillment="delivery"
+				>
+					<svg class="xciv-header-tabs__icon" width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false">
+						<path d="M3 7.5h11.5v9.25H3V7.5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+						<path d="M14.5 10.25h3.1L20 13.1v3.65h-5.5V10.25Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+						<circle cx="7.1" cy="17.6" r="1.55" fill="currentColor"/>
+						<circle cx="17.1" cy="17.6" r="1.55" fill="currentColor"/>
+					</svg>
+					<span>Lead Delivery</span>
+				</button>
+				<button
+					type="button"
+					class="xciv-header-tabs__tab"
+					role="tab"
+					aria-selected="false"
+					data-xciv-fulfillment="pickup"
+				>
+					<svg class="xciv-header-tabs__icon" width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false">
+						<path d="M12 22s7-7.2 7-12a7 7 0 1 0-14 0c0 4.8 7 12 7 12Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+						<circle cx="12" cy="10" r="2.4" fill="currentColor"/>
+					</svg>
+					<span>Pickup &amp; Location</span>
+				</button>
+			</nav>
+			<!-- /wp:html -->
+		</div>
+		<!-- /wp:group -->
+
+		<!-- wp:group {"className":"xciv-header-right","layout":{"type":"flex","flexWrap":"nowrap","justifyContent":"right","verticalAlignment":"center"},"style":{"spacing":{"blockGap":"0.5rem"}}} -->
+		<div class="wp-block-group xciv-header-right">
+			<!-- wp:woocommerce/mini-cart {"hasHiddenPrice":true} /-->
+
+			<!-- wp:shortcode -->
+			[xciv_header_profile]
+			<!-- /wp:shortcode -->
+		</div>
+		<!-- /wp:group -->
+	</div>
+	<!-- /wp:group -->
+</div>
+<!-- /wp:group -->

@@ -1,0 +1,39 @@
+# WordPress core (local XAMPP install — not this repo)
+/wp-admin/
+/wp-includes/
+/wp-*.php
+/index.php
+/license.txt
+/readme.html
+/xmlrpc.php
+.htaccess
+
+# Config & secrets
+wp-config.php
+.env
+.mysql-local.json
+
+# Third-party themes/plugins (Kadence installed on the server / XAMPP)
+/wp-content/themes/twenty*/
+/wp-content/plugins/
+/wp-content/index.php
+/wp-content/advanced-cache.php
+/wp-content/wp-cache-config.php
+
+# Uploads & caches
+/wp-content/uploads/
+/wp-content/cache/
+/wp-content/upgrade/
+/wp-content/backup*/
+/wp-content/debug.log
+
+# Vendor / deps
+/wp-content/themes/xciv-courier/vendor/
+node_modules/
+
+# OS / IDE
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.log

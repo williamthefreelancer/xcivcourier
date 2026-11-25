@@ -1,0 +1,475 @@
+/* Front page — hierarchy + vertical rhythm over Kadence defaults */
+
+body.home {
+	--xciv-home-ink: var(--wp--preset--color--ink, #f2efe8);
+	--xciv-home-muted: var(--wp--preset--color--muted, #9aa3ad);
+	--xciv-home-display: var(--wp--preset--font-family--display, "Cormorant Garamond", serif);
+	--xciv-home-body: var(--wp--preset--font-family--body, "DM Sans", sans-serif);
+}
+
+/* Kill stacked row gutters; section padding owns the rhythm */
+body.home .entry-content > .kb-row-layout-wrap,
+body.home .wp-block-post-content > .kb-row-layout-wrap,
+body.home main .kb-row-layout-wrap {
+	margin-block: 0 !important;
+}
+
+/* —— Hero —— */
+body.home .kt-adv-heading11_ceecba-cf {
+	margin: 0;
+	font-family: var(--xciv-home-display);
+	font-size: clamp(2.65rem, 7vw, 4rem);
+	font-weight: 600;
+	line-height: 1.05;
+	letter-spacing: -0.01em;
+	color: var(--xciv-home-ink);
+}
+
+body.home .xciv-hero-deck,
+body.home .kt-adv-heading11_012143-fa {
+	margin: 0.15rem auto 0;
+	max-width: 34rem;
+	font-family: var(--xciv-home-body) !important;
+	font-size: clamp(0.98rem, 2vw, 1.125rem) !important;
+	font-weight: 400 !important;
+	line-height: 1.5 !important;
+	color: var(--xciv-home-muted) !important;
+}
+
+body.home .kb-row-layout-id11_865962-e4 .kb-image11_8dae02-2c,
+body.home .kb-row-layout-id11_865962-e4 figure {
+	margin: 0;
+}
+
+body.home .kb-row-layout-id11_865962-e4 img {
+	display: block;
+	width: 100%;
+	height: auto;
+}
+
+/* —— Section titles (one step below hero, clear of cards) —— */
+body.home .kb-row-layout-id11_do_head .wp-block-kadence-advancedheading,
+body.home .kb-row-layout-id11_dont_head .wp-block-kadence-advancedheading,
+body.home .kb-row-layout-id11_price_head .wp-block-kadence-advancedheading,
+body.home .kb-row-layout-id11_faq_wrap > .kt-row-column-wrap > .wp-block-kadence-column > .kt-inside-inner-col > .wp-block-kadence-advancedheading,
+body.home .kt-adv-heading11_f3a982-83,
+body.home .kt-adv-heading11_7d236b-df,
+body.home .kt-adv-heading11_944866-e4,
+body.home .kt-adv-heading11_5fc67e-b8 {
+	margin: 0;
+	font-family: var(--xciv-home-display);
+	font-size: clamp(1.65rem, 3.2vw, 2.15rem) !important;
+	font-weight: 600;
+	line-height: 1.15;
+	color: var(--xciv-home-ink);
+}
+
+/* CTA closing line — secondary to H1, still a section anchor */
+body.home .kt-adv-heading11_76cd36-72 {
+	margin: 0 0 0.65rem;
+	font-family: var(--xciv-home-display);
+	font-size: clamp(1.75rem, 3.5vw, 2.35rem) !important;
+	font-weight: 600;
+	line-height: 1.15;
+}
+
+body.home .kb-row-layout-id11_a30dbb-76 .has-text-align-center,
+body.home .kb-row-layout-id11_a30dbb-76 > .kt-row-column-wrap p {
+	margin: 0 auto;
+	max-width: 32rem;
+	color: var(--xciv-home-muted);
+	line-height: 1.5;
+}
+
+/* —— Cards: restore surfaces (Kadence emits padding as px) + tight title/body —— */
+body.home [class*="kadence-column11_card_"] > .kt-inside-inner-col {
+	display: grid;
+	gap: 0.55rem;
+	align-content: start;
+	grid-template-rows: auto auto 1fr;
+	min-height: 8.25rem;
+	padding: 1.35rem 1.35rem !important;
+	background: var(--wp--preset--color--bg-elevated, #151a1f) !important;
+	border: 1px solid #2a3138 !important;
+	border-radius: 0 !important;
+	box-sizing: border-box;
+}
+
+/* Card icons — white glyphs via mask (beats Kadence overlay opacity) */
+body.home [class*="kadence-column11_card_do"] > .kt-inside-inner-col::before,
+body.home [class*="kadence-column11_card_dont"] > .kt-inside-inner-col::before {
+	content: "";
+	display: block;
+	width: 1.55rem;
+	height: 1.55rem;
+	margin: 0.15rem 0 0.1rem;
+	opacity: 1 !important;
+	border: 0;
+	box-shadow: none;
+	background-color: #ffffff !important;
+	background-image: none !important;
+	-webkit-mask-repeat: no-repeat;
+	mask-repeat: no-repeat;
+	-webkit-mask-position: center;
+	mask-position: center;
+	-webkit-mask-size: contain;
+	mask-size: contain;
+}
+
+/* Hold your spot — pin */
+body.home .kadence-column11_card_do1 > .kt-inside-inner-col::before {
+	-webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.1' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 21s7-6.2 7-11.2a7 7 0 1 0-14 0C5 14.8 12 21 12 21z'/%3E%3Ccircle cx='12' cy='9.8' r='2.15'/%3E%3C/svg%3E");
+	mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.1' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 21s7-6.2 7-11.2a7 7 0 1 0-14 0C5 14.8 12 21 12 21z'/%3E%3Ccircle cx='12' cy='9.8' r='2.15'/%3E%3C/svg%3E");
+}
+
+/* Queue the open — door */
+body.home .kadence-column11_card_do2 > .kt-inside-inner-col::before {
+	-webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.1' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 21V5a2 2 0 0 1 2-2h8v18'/%3E%3Cpath d='M14 3h4a2 2 0 0 1 2 2v16'/%3E%3Cpath d='M2 21h20'/%3E%3Ccircle cx='11' cy='12' r='1' fill='black' stroke='none'/%3E%3C/svg%3E");
+	mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.1' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 21V5a2 2 0 0 1 2-2h8v18'/%3E%3Cpath d='M14 3h4a2 2 0 0 1 2 2v16'/%3E%3Cpath d='M2 21h20'/%3E%3Ccircle cx='11' cy='12' r='1' fill='black' stroke='none'/%3E%3C/svg%3E");
+}
+
+/* Secure pickup — package */
+body.home .kadence-column11_card_do3 > .kt-inside-inner-col::before {
+	-webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.1' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 8.5 12 3 3 8.5v7L12 21l9-5.5v-7z'/%3E%3Cpath d='M3.3 8.7 12 14l8.7-5.3'/%3E%3Cpath d='M12 14v7'/%3E%3C/svg%3E");
+	mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.1' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 8.5 12 3 3 8.5v7L12 21l9-5.5v-7z'/%3E%3Cpath d='M3.3 8.7 12 14l8.7-5.3'/%3E%3Cpath d='M12 14v7'/%3E%3C/svg%3E");
+}
+
+/* Live updates — signal */
+body.home .kadence-column11_card_do4 > .kt-inside-inner-col::before {
+	-webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.1' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5.5 18.5a9 9 0 0 1 0-13'/%3E%3Cpath d='M8.5 15.5a4.8 4.8 0 0 1 0-7'/%3E%3Ccircle cx='12' cy='12' r='1.4' fill='black' stroke='none'/%3E%3Cpath d='M15.5 15.5a4.8 4.8 0 0 0 0-7'/%3E%3Cpath d='M18.5 18.5a9 9 0 0 0 0-13'/%3E%3C/svg%3E");
+	mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.1' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5.5 18.5a9 9 0 0 1 0-13'/%3E%3Cpath d='M8.5 15.5a4.8 4.8 0 0 1 0-7'/%3E%3Ccircle cx='12' cy='12' r='1.4' fill='black' stroke='none'/%3E%3Cpath d='M15.5 15.5a4.8 4.8 0 0 0 0-7'/%3E%3Cpath d='M18.5 18.5a9 9 0 0 0 0-13'/%3E%3C/svg%3E");
+}
+
+/* No line cutting — ban over jump */
+body.home .kadence-column11_card_dont1 > .kt-inside-inner-col::before {
+	-webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.1' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='m6.2 6.2 11.6 11.6'/%3E%3Cpath d='M8 14h5l3-4'/%3E%3C/svg%3E");
+	mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.1' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='m6.2 6.2 11.6 11.6'/%3E%3Cpath d='M8 14h5l3-4'/%3E%3C/svg%3E");
+}
+
+/* No stock promise — empty box */
+body.home .kadence-column11_card_dont2 > .kt-inside-inner-col::before {
+	-webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.1' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 8.5 12 3 3 8.5v7L12 21l9-5.5v-7z'/%3E%3Cpath d='M3.3 8.7 12 14l8.7-5.3'/%3E%3Cpath d='m9 11 6 3.5'/%3E%3C/svg%3E");
+	mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.1' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 8.5 12 3 3 8.5v7L12 21l9-5.5v-7z'/%3E%3Cpath d='M3.3 8.7 12 14l8.7-5.3'/%3E%3Cpath d='m9 11 6 3.5'/%3E%3C/svg%3E");
+}
+
+/* No blind buys — eye slash */
+body.home .kadence-column11_card_dont3 > .kt-inside-inner-col::before {
+	-webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.1' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 3l18 18'/%3E%3Cpath d='M10.6 10.6a2 2 0 0 0 2.8 2.8'/%3E%3Cpath d='M9.9 5.1A10.4 10.4 0 0 1 12 5c5 0 8.5 4.2 9.7 6.1a1.2 1.2 0 0 1 0 1.3 12.7 12.7 0 0 1-1.9 2.3'/%3E%3Cpath d='M6.1 6.1A12.8 12.8 0 0 0 2.3 12.4a1.2 1.2 0 0 0 0 1.3C3.5 15.6 7 20 12 20c1.3 0 2.5-.3 3.6-.8'/%3E%3C/svg%3E");
+	mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.1' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 3l18 18'/%3E%3Cpath d='M10.6 10.6a2 2 0 0 0 2.8 2.8'/%3E%3Cpath d='M9.9 5.1A10.4 10.4 0 0 1 12 5c5 0 8.5 4.2 9.7 6.1a1.2 1.2 0 0 1 0 1.3 12.7 12.7 0 0 1-1.9 2.3'/%3E%3Cpath d='M6.1 6.1A12.8 12.8 0 0 0 2.3 12.4a1.2 1.2 0 0 0 0 1.3C3.5 15.6 7 20 12 20c1.3 0 2.5-.3 3.6-.8'/%3E%3C/svg%3E");
+}
+
+/* No banned waits — prohibited */
+body.home .kadence-column11_card_dont4 > .kt-inside-inner-col::before {
+	-webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.1' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='M8 12h8'/%3E%3C/svg%3E");
+	mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.1' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='M8 12h8'/%3E%3C/svg%3E");
+}
+
+body.home [class*="kadence-column11_card_"] .wp-block-kadence-advancedheading,
+body.home [class*="kadence-column11_card_"] h4 {
+	margin: 0;
+	font-family: var(--xciv-home-body);
+	font-size: 1rem;
+	font-weight: 600;
+	letter-spacing: 0.01em;
+	line-height: 1.25;
+	color: var(--xciv-home-ink);
+}
+
+body.home [class*="kadence-column11_card_"] p {
+	margin: 0;
+	color: var(--xciv-home-muted);
+	font-size: 0.92rem;
+	line-height: 1.45;
+}
+
+/* —— Pricing plan —— */
+body.home .xciv-pricing {
+	display: grid;
+	gap: 1.15rem;
+	max-width: 1100px;
+	margin: 0 auto;
+	padding: 0 1.5rem;
+}
+
+@media (min-width: 900px) {
+	body.home .xciv-pricing {
+		grid-template-columns: minmax(0, 1.35fr) minmax(16rem, 0.85fr);
+		align-items: stretch;
+		gap: 1.25rem;
+	}
+}
+
+body.home .xciv-plan {
+	display: grid;
+	gap: 0.85rem;
+	align-content: start;
+	padding: 1.6rem 1.5rem 1.5rem;
+	background:
+		linear-gradient(180deg, rgba(196, 163, 90, 0.08), transparent 42%),
+		var(--wp--preset--color--bg-elevated, #151a1f);
+	border: 1px solid #2a3138;
+	box-sizing: border-box;
+}
+
+body.home .xciv-plan.is-featured {
+	border-color: rgba(196, 163, 90, 0.55);
+	box-shadow:
+		0 0 0 1px rgba(196, 163, 90, 0.12),
+		0 18px 40px rgba(0, 0, 0, 0.28);
+	padding: 1.85rem 1.65rem 1.65rem;
+	gap: 1rem;
+}
+
+body.home .xciv-plan__eyebrow {
+	margin: 0;
+	font-family: var(--xciv-home-body);
+	font-size: 0.72rem;
+	font-weight: 600;
+	letter-spacing: 0.12em;
+	text-transform: uppercase;
+	color: var(--wp--preset--color--accent, #c4a35a);
+}
+
+body.home .xciv-plan__name {
+	margin: 0;
+	font-family: var(--xciv-home-display);
+	font-size: clamp(1.65rem, 3vw, 2.1rem);
+	font-weight: 600;
+	line-height: 1.1;
+	color: var(--xciv-home-ink);
+}
+
+body.home .xciv-plan__price {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: baseline;
+	gap: 0.35rem 0.65rem;
+	margin: 0.15rem 0 0.1rem;
+}
+
+body.home .xciv-plan__currency,
+body.home .xciv-plan__amount {
+	font-family: var(--xciv-home-display);
+	font-weight: 600;
+	color: var(--xciv-home-ink);
+}
+
+body.home .xciv-plan__currency {
+	font-size: clamp(1.5rem, 3vw, 2rem);
+	line-height: 1;
+	align-self: flex-start;
+	margin-top: 0.4em;
+	margin-right: -0.35rem;
+}
+
+body.home .xciv-plan__amount {
+	font-size: clamp(3.4rem, 8vw, 4.5rem);
+	line-height: 0.9;
+	letter-spacing: -0.03em;
+}
+
+body.home .xciv-plan__period {
+	display: grid;
+	gap: 0.15rem;
+}
+
+body.home .xciv-plan__period-main {
+	font-family: var(--xciv-home-body);
+	font-size: 0.95rem;
+	font-weight: 600;
+	color: var(--xciv-home-ink);
+}
+
+body.home .xciv-plan__period-sub {
+	font-family: var(--xciv-home-body);
+	font-size: 0.85rem;
+	color: var(--xciv-home-muted);
+}
+
+body.home .xciv-plan__lead {
+	margin: 0;
+	max-width: 34rem;
+	color: var(--xciv-home-muted);
+	font-size: 0.98rem;
+	line-height: 1.5;
+}
+
+body.home .xciv-plan__features {
+	list-style: none;
+	margin: 0.25rem 0 0;
+	padding: 0;
+	display: grid;
+	gap: 0.65rem;
+}
+
+body.home .xciv-plan__features li {
+	position: relative;
+	padding-left: 1.55rem;
+	color: var(--xciv-home-ink);
+	font-size: 0.94rem;
+	line-height: 1.4;
+}
+
+body.home .xciv-plan__features li::before {
+	content: "";
+	position: absolute;
+	left: 0;
+	top: 0.2rem;
+	width: 0.95rem;
+	height: 0.95rem;
+	background-color: var(--wp--preset--color--accent, #c4a35a);
+	-webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m5 12 5 5L20 7'/%3E%3C/svg%3E") center / contain no-repeat;
+	mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m5 12 5 5L20 7'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+
+body.home .xciv-plan__features--tight {
+	gap: 0.5rem;
+}
+
+body.home .xciv-plan__features--tight li {
+	color: var(--xciv-home-muted);
+	font-size: 0.9rem;
+}
+
+body.home .xciv-plan__cta {
+	justify-self: start;
+	margin-top: 0.45rem;
+	appearance: none;
+	border: 0;
+	background: var(--wp--preset--color--accent, #c4a35a);
+	color: var(--wp--preset--color--accent-ink, #0c0f12);
+	font-family: var(--xciv-home-body);
+	font-size: 0.95rem;
+	font-weight: 600;
+	letter-spacing: 0.01em;
+	padding: 0.9rem 1.4rem;
+	cursor: pointer;
+}
+
+body.home .xciv-plan__cta:hover {
+	filter: brightness(1.06);
+}
+
+body.home .xciv-plan__cta:focus-visible {
+	outline: 2px solid var(--wp--preset--color--accent, #c4a35a);
+	outline-offset: 3px;
+}
+
+body.home .xciv-plan-side {
+	display: grid;
+	gap: 1rem;
+}
+
+body.home .xciv-plan--rate {
+	padding: 1.25rem 1.2rem 1.2rem;
+	background: rgba(21, 26, 31, 0.92);
+	gap: 0.55rem;
+}
+
+body.home .xciv-plan--rate .xciv-plan__name {
+	font-size: 1.35rem;
+}
+
+body.home .xciv-plan--rate .xciv-plan__amount {
+	font-size: 2.35rem;
+}
+
+body.home .xciv-plan--rate .xciv-plan__currency {
+	font-size: 1.2rem;
+	margin-top: 0.25em;
+}
+
+body.home .xciv-plan--rate .xciv-plan__lead {
+	font-size: 0.9rem;
+}
+
+body.home .xciv-plan__price--compact {
+	margin: 0;
+}
+
+@media (max-width: 899px) {
+	body.home .xciv-plan-side {
+		grid-template-columns: 1fr;
+	}
+}
+
+@media (min-width: 600px) and (max-width: 899px) {
+	body.home .xciv-plan-side {
+		grid-template-columns: 1fr 1fr;
+	}
+}
+
+/* FAQ: match dark surface, tighten title → list */
+body.home .kb-row-layout-id11_faq_wrap .wp-block-kadence-accordion {
+	margin-top: 0.35rem;
+}
+
+body.home .kb-row-layout-id11_faq_wrap .kt-accordion-pane {
+	border: 1px solid #2a3138 !important;
+	background: var(--wp--preset--color--bg-elevated, #151a1f) !important;
+	margin: 0 0 0.5rem !important;
+}
+
+body.home .kb-row-layout-id11_faq_wrap .kt-blocks-accordion-header,
+body.home .kb-row-layout-id11_faq_wrap .kt-blocks-accordion-header:hover,
+body.home .kb-row-layout-id11_faq_wrap .kt-accordion-pane .kt-accordion-panel-inner {
+	background: transparent !important;
+	color: var(--xciv-home-ink) !important;
+	border: 0 !important;
+	box-shadow: none !important;
+}
+
+body.home .kb-row-layout-id11_faq_wrap .kt-blocks-accordion-header {
+	padding: 0.85rem 1rem !important;
+}
+
+body.home .kb-row-layout-id11_faq_wrap .kt-blocks-accordion-title {
+	color: var(--xciv-home-ink) !important;
+	font-family: var(--xciv-home-body);
+	font-weight: 600;
+	font-size: 0.95rem;
+}
+
+body.home .kb-row-layout-id11_faq_wrap .kt-accordion-panel-inner {
+	padding: 0 1rem 0.95rem !important;
+	color: var(--xciv-home-muted) !important;
+}
+
+body.home .kb-row-layout-id11_faq_wrap .kt-accordion-panel-inner p {
+	margin: 0;
+	color: var(--xciv-home-muted);
+}
+
+/* Booking CTA */
+body.home .xciv-booking-cta {
+	margin-top: 1.25rem !important;
+}
+
+body.home .xciv-booking-open {
+	appearance: none;
+	border: 0;
+	background: var(--wp--preset--color--accent, #c4a35a);
+	color: var(--wp--preset--color--accent-ink, #0c0f12);
+	font-family: var(--xciv-home-body);
+	font-size: 0.95rem;
+	font-weight: 600;
+	letter-spacing: 0.01em;
+	padding: 0.85rem 1.35rem;
+	cursor: pointer;
+}
+
+body.home .xciv-booking-open:hover {
+	filter: brightness(1.06);
+}
+
+body.home .xciv-booking-open:focus-visible {
+	outline: 2px solid var(--wp--preset--color--accent, #c4a35a);
+	outline-offset: 3px;
+}
+
+@media (max-width: 781px) {
+	body.home [class*="kadence-column11_card_"] .wp-block-kadence-advancedheading,
+	body.home [class*="kadence-column11_card_"] h4 {
+		font-size: 1.1rem;
+	}
+}

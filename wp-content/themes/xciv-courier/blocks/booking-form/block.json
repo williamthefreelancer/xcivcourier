@@ -1,0 +1,30 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "xciv-courier/booking-form",
+	"version": "0.3.0",
+	"title": "Booking Form",
+	"category": "widgets",
+	"icon": "calendar-alt",
+	"description": "Multi-step queue management booking form for line sitting — conditional fields, SMS alerts, WooCommerce checkout.",
+	"keywords": ["booking", "courier", "queue", "line sitting", "form"],
+	"textdomain": "xciv-courier",
+	"supports": {
+		"html": false,
+		"align": ["wide", "full"]
+	},
+	"attributes": {
+		"heading": {
+			"type": "string",
+			"default": "Book a line sitter"
+		},
+		"submitLabel": {
+			"type": "string",
+			"default": "Continue to checkout"
+		}
+	},
+	"editorScript": "file:./edit.js",
+	"viewScript": "file:./view.js",
+	"style": "file:./style.css",
+	"render": "file:./render.php"
+}

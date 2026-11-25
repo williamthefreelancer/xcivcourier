@@ -1,0 +1,92 @@
+/* XCIV Shop — reuse My Account feed cards + panels */
+
+body.xciv-shop-catalog .wp-block-query-title,
+body.xciv-shop-catalog h1.wp-block-query-title {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	padding: 0;
+	margin: -1px;
+	overflow: hidden;
+	clip: rect(0, 0, 0, 0);
+	white-space: nowrap;
+	border: 0;
+}
+
+body.xciv-shop-catalog .wc-block-breadcrumbs,
+body.xciv-shop-catalog .woocommerce-breadcrumb,
+body.xciv-shop-catalog .wc-block-product-results-count,
+body.xciv-shop-catalog .wp-block-woocommerce-product-results-count,
+body.xciv-shop-catalog .wp-block-woocommerce-catalog-sorting,
+body.xciv-shop-catalog .wc-block-store-notices:empty {
+	display: none !important;
+}
+
+body.xciv-shop-catalog .wp-block-group.is-content-justification-space-between:has(.wc-block-product-results-count),
+body.xciv-shop-catalog .wp-block-group.is-content-justification-space-between:has(.wp-block-woocommerce-product-results-count) {
+	display: none !important;
+}
+
+.xciv-shop-feed {
+	max-width: 78rem;
+	width: 100%;
+	margin-inline: auto;
+}
+
+.xciv-shop-feed__top {
+	grid-template-columns: minmax(0, 1fr) minmax(12rem, 22rem);
+	align-items: end;
+}
+
+.xciv-shop-panels--booking {
+	grid-template-columns: minmax(0, 1fr);
+}
+
+@media (min-width: 720px) {
+	.xciv-shop-panels--booking {
+		grid-template-columns: minmax(0, 28rem);
+	}
+}
+
+.xciv-shop-panel {
+	position: relative;
+}
+
+.xciv-shop-panel__cta {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: fit-content;
+	margin-top: 0.15rem;
+	padding: 0.55rem 0.9rem;
+	background: var(--wp--preset--color--accent, #c4a35a);
+	color: var(--wp--preset--color--accent-ink, #0c0f12);
+	font-size: 0.8rem;
+	font-weight: 700;
+	text-decoration: none;
+	transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.xciv-shop-panel__cta:hover {
+	background: #d4b46a;
+	color: var(--wp--preset--color--accent-ink, #0c0f12);
+	text-decoration: none;
+}
+
+.xciv-shop-panel__cta--ghost {
+	background: transparent;
+	border: 1px solid rgba(196, 163, 90, 0.45);
+	color: var(--wp--preset--color--accent, #c4a35a);
+}
+
+.xciv-shop-panel__cta--ghost:hover {
+	background: rgba(196, 163, 90, 0.12);
+	border-color: rgba(196, 163, 90, 0.7);
+	color: var(--wp--preset--color--ink, #f2efe8);
+}
+
+@media (max-width: 639px) {
+	.xciv-shop-feed__top {
+		grid-template-columns: 1fr;
+	}
+}

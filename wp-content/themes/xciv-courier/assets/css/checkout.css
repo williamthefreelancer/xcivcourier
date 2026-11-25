@@ -1,0 +1,339 @@
+/* Multi-step WooCommerce Blocks checkout — matches booking wizard language. */
+
+.xciv-checkout-progress {
+	display: grid;
+	gap: 0.65rem;
+	margin: 0 0 1.5rem;
+}
+
+.xciv-checkout-progress__steps {
+	display: grid;
+	grid-template-columns: repeat(var(--xciv-checkout-steps, 3), minmax(0, 1fr));
+	gap: 0.35rem;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.xciv-checkout-progress__item {
+	display: grid;
+	justify-items: center;
+	gap: 0.3rem;
+	min-width: 0;
+	opacity: 0.45;
+	transition: opacity 0.2s ease;
+}
+
+.xciv-checkout-progress__item.is-active,
+.xciv-checkout-progress__item.is-done {
+	opacity: 1;
+}
+
+.xciv-checkout-progress__num {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 1.65rem;
+	height: 1.65rem;
+	border: 1px solid rgba(242, 239, 232, 0.18);
+	font-size: 0.72rem;
+	font-weight: 600;
+	letter-spacing: 0.04em;
+	color: var(--wp--preset--color--muted, #9aa3ad);
+}
+
+.xciv-checkout-progress__item.is-active .xciv-checkout-progress__num {
+	border-color: var(--wp--preset--color--accent, #c4a35a);
+	background: rgba(196, 163, 90, 0.14);
+	color: var(--wp--preset--color--accent, #c4a35a);
+}
+
+.xciv-checkout-progress__item.is-done .xciv-checkout-progress__num {
+	border-color: rgba(196, 163, 90, 0.55);
+	color: var(--wp--preset--color--accent, #c4a35a);
+}
+
+.xciv-checkout-progress__label {
+	font-size: 0.68rem;
+	letter-spacing: 0.04em;
+	text-transform: uppercase;
+	text-align: center;
+	color: var(--wp--preset--color--muted, #9aa3ad);
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	max-width: 100%;
+}
+
+.xciv-checkout-progress__item.is-active .xciv-checkout-progress__label {
+	color: var(--wp--preset--color--ink, #f2efe8);
+}
+
+.xciv-checkout-progress__status {
+	margin: 0;
+	font-size: 0.8rem;
+	color: var(--wp--preset--color--muted, #9aa3ad);
+}
+
+.xciv-checkout-nav {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.75rem;
+	align-items: center;
+	margin: 1.35rem 0 0;
+}
+
+.xciv-checkout-nav__btn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding: 0.85rem 1.35rem;
+	font: inherit;
+	font-weight: 600;
+	color: var(--wp--preset--color--accent-ink, #0c0f12);
+	background: var(--wp--preset--color--accent, #c4a35a);
+	border: 0;
+	border-radius: 0;
+	cursor: pointer;
+}
+
+.xciv-checkout-nav__btn:hover {
+	background: #d4b56a;
+}
+
+.xciv-checkout-nav__btn--ghost {
+	color: var(--wp--preset--color--ink, #f2efe8);
+	background: transparent;
+	border: 1px solid rgba(242, 239, 232, 0.18);
+}
+
+.xciv-checkout-nav__btn--ghost:hover {
+	border-color: rgba(196, 163, 90, 0.55);
+	background: rgba(196, 163, 90, 0.08);
+}
+
+.xciv-checkout-nav__btn[hidden] {
+	display: none !important;
+}
+
+/* Progressive disclosure of WC checkout steps. */
+.wp-block-woocommerce-checkout.xciv-checkout--stepped
+	.wc-block-components-checkout-step[data-xciv-checkout-panel]:not(.is-xciv-active),
+.wp-block-woocommerce-checkout.xciv-checkout--stepped
+	.xciv-checkout-details[data-xciv-checkout-panel]:not(.is-xciv-active) {
+	display: none !important;
+}
+
+.wp-block-woocommerce-checkout.xciv-checkout--stepped
+	.wc-block-components-checkout-step[data-xciv-checkout-panel].is-xciv-active,
+.wp-block-woocommerce-checkout.xciv-checkout--stepped
+	.xciv-checkout-details[data-xciv-checkout-panel].is-xciv-active {
+	display: block;
+	animation: xciv-checkout-panel-in 0.2s ease;
+}
+
+/* Hide place-order until the final step (3 without booking details, 4 with). */
+.wp-block-woocommerce-checkout.xciv-checkout--stepped:not(.xciv-checkout--has-details):not([data-xciv-step="3"])
+	.wc-block-checkout__actions,
+.wp-block-woocommerce-checkout.xciv-checkout--stepped:not(.xciv-checkout--has-details):not([data-xciv-step="3"])
+	.wc-block-components-checkout-place-order-button,
+.wp-block-woocommerce-checkout.xciv-checkout--stepped:not(.xciv-checkout--has-details):not([data-xciv-step="3"])
+	.wc-block-checkout__terms,
+.wp-block-woocommerce-checkout.xciv-checkout--has-details:not([data-xciv-step="4"])
+	.wc-block-checkout__actions,
+.wp-block-woocommerce-checkout.xciv-checkout--has-details:not([data-xciv-step="4"])
+	.wc-block-components-checkout-place-order-button,
+.wp-block-woocommerce-checkout.xciv-checkout--has-details:not([data-xciv-step="4"])
+	.wc-block-checkout__terms {
+	display: none !important;
+}
+
+/* Booking Details step (injected). */
+.xciv-checkout-details {
+	margin: 0 0 1.25rem;
+	padding: 0;
+	border: 0;
+	min-width: 0;
+}
+
+.xciv-checkout-details__legend {
+	display: block;
+	margin: 0 0 1rem;
+	padding: 0;
+	font-family: var(--wp--preset--font-family--display, "Cormorant Garamond", serif);
+	font-size: 1.35rem;
+	font-weight: 600;
+	color: var(--wp--preset--color--ink, #f2efe8);
+}
+
+.xciv-checkout-details__grid {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 0.85rem;
+	margin: 0 0 0.85rem;
+}
+
+.xciv-checkout-details__row {
+	display: grid;
+	gap: 0.35rem;
+	margin: 0 0 0.85rem;
+}
+
+.xciv-checkout-details__row[hidden],
+.xciv-checkout-details__grid[hidden] {
+	display: none !important;
+}
+
+.xciv-checkout-details__row label {
+	font-size: 0.85rem;
+	color: var(--wp--preset--color--muted, #9aa3ad);
+}
+
+.xciv-checkout-details__row input,
+.xciv-checkout-details__row textarea,
+.xciv-checkout-details__row select {
+	width: 100%;
+	padding: 0.7rem 0.85rem;
+	font: inherit;
+	color: var(--wp--preset--color--ink, #f2efe8);
+	background: var(--wp--preset--color--bg-elevated, #151a1f);
+	border: 1px solid rgba(242, 239, 232, 0.12);
+	border-radius: 0;
+}
+
+.xciv-checkout-details__row select {
+	appearance: none;
+	background-image: linear-gradient(45deg, transparent 50%, #9aa3ad 50%),
+		linear-gradient(135deg, #9aa3ad 50%, transparent 50%);
+	background-position: calc(100% - 16px) calc(50% - 2px), calc(100% - 11px) calc(50% - 2px);
+	background-size: 5px 5px, 5px 5px;
+	background-repeat: no-repeat;
+	padding-right: 2rem;
+}
+
+.xciv-checkout-details__row input:focus,
+.xciv-checkout-details__row textarea:focus,
+.xciv-checkout-details__row select:focus {
+	outline: 2px solid rgba(196, 163, 90, 0.45);
+	outline-offset: 1px;
+	border-color: rgba(196, 163, 90, 0.45);
+}
+
+.xciv-checkout-details__status {
+	margin: 0.35rem 0 0;
+	font-size: 0.85rem;
+	color: var(--wp--preset--color--muted, #9aa3ad);
+}
+
+.xciv-checkout-details__status.is-error {
+	color: #e8a0a0;
+}
+
+@media (max-width: 40rem) {
+	.xciv-checkout-details__grid {
+		grid-template-columns: 1fr;
+	}
+}
+
+@keyframes xciv-checkout-panel-in {
+	from {
+		opacity: 0;
+		transform: translateY(0.35rem);
+	}
+	to {
+		opacity: 1;
+		transform: none;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.xciv-checkout-progress__item {
+		transition: none;
+	}
+
+	.wp-block-woocommerce-checkout.xciv-checkout--stepped
+		.wc-block-components-checkout-step[data-xciv-checkout-panel].is-xciv-active {
+		animation: none;
+	}
+}
+
+@media (max-width: 40rem) {
+	.xciv-checkout-progress__label {
+		display: none;
+	}
+
+	.xciv-checkout-progress__steps {
+		gap: 0.25rem;
+	}
+}
+
+/* WC Blocks chrome — align with theme tokens. */
+.woocommerce-checkout .wp-block-woocommerce-checkout {
+	color: var(--wp--preset--color--ink, #f2efe8);
+}
+
+.woocommerce-checkout .wc-block-components-title,
+.woocommerce-checkout .wc-block-components-checkout-step__title {
+	font-family: var(--wp--preset--font-family--display, "Cormorant Garamond", serif);
+	font-weight: 600;
+	color: var(--wp--preset--color--ink, #f2efe8);
+}
+
+.woocommerce-checkout .wc-block-components-checkout-step__description,
+.woocommerce-checkout .wc-block-components-checkbox__label,
+.woocommerce-checkout .wc-block-components-totals-item__label,
+.woocommerce-checkout .wc-block-components-order-summary-item__description {
+	color: var(--wp--preset--color--muted, #9aa3ad);
+}
+
+.woocommerce-checkout .wc-block-components-text-input input,
+.woocommerce-checkout .wc-block-components-textarea textarea,
+.woocommerce-checkout .wc-block-components-combobox input,
+.woocommerce-checkout .wc-blocks-components-select .components-combobox-control__input,
+.woocommerce-checkout .wc-block-components-address-form input,
+.woocommerce-checkout .wc-block-components-address-form select {
+	color: var(--wp--preset--color--ink, #f2efe8);
+	background: var(--wp--preset--color--bg-elevated, #151a1f);
+	border-color: rgba(242, 239, 232, 0.12);
+	border-radius: 0;
+}
+
+.woocommerce-checkout .wc-block-components-text-input input:focus,
+.woocommerce-checkout .wc-block-components-textarea textarea:focus,
+.woocommerce-checkout .wc-block-components-combobox input:focus,
+.woocommerce-checkout .wc-block-components-address-form input:focus,
+.woocommerce-checkout .wc-block-components-address-form select:focus {
+	outline: 2px solid rgba(196, 163, 90, 0.45);
+	outline-offset: 1px;
+	border-color: rgba(196, 163, 90, 0.45);
+}
+
+.woocommerce-checkout .wc-block-components-checkout-place-order-button,
+.woocommerce-checkout .wc-block-components-button:not(.is-link):not(.outlined) {
+	background: var(--wp--preset--color--accent, #c4a35a) !important;
+	color: var(--wp--preset--color--accent-ink, #0c0f12) !important;
+	border-radius: 0 !important;
+	font-weight: 600;
+}
+
+.woocommerce-checkout .wc-block-components-checkout-place-order-button:hover,
+.woocommerce-checkout .wc-block-components-button:not(.is-link):not(.outlined):hover {
+	background: #d4b56a !important;
+}
+
+.woocommerce-checkout .wc-block-components-sidebar {
+	background: var(--wp--preset--color--bg-elevated, #151a1f);
+	border: 1px solid rgba(242, 239, 232, 0.1);
+	padding: 1.25rem;
+}
+
+.woocommerce-checkout .wc-block-components-totals-item__value,
+.woocommerce-checkout .wc-block-components-totals-footer-item .wc-block-components-totals-item__value {
+	color: var(--wp--preset--color--ink, #f2efe8);
+}
+
+.woocommerce-checkout .wc-block-components-checkbox .wc-block-components-checkbox__input,
+.woocommerce-checkout input[type="checkbox"],
+.woocommerce-checkout input[type="radio"] {
+	accent-color: var(--wp--preset--color--accent, #c4a35a);
+}

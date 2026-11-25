@@ -1,0 +1,356 @@
+/* Custom booking form — queue management with conditional sections. */
+
+.xciv-booking {
+	max-width: 40rem;
+}
+
+.xciv-booking__title {
+	margin: 0 0 1.25rem;
+	font-family: var(--wp--preset--font-family--display, "Cormorant Garamond", serif);
+	font-size: clamp(1.75rem, 3vw, 2.25rem);
+	font-weight: 600;
+	line-height: 1.15;
+}
+
+.xciv-booking__form,
+.xciv-booking--editor {
+	display: grid;
+	gap: 1.35rem;
+}
+
+.xciv-booking__progress {
+	display: grid;
+	gap: 0.65rem;
+}
+
+.xciv-booking__steps {
+	display: grid;
+	grid-template-columns: repeat(6, minmax(0, 1fr));
+	gap: 0.35rem;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.xciv-booking__step-item {
+	display: grid;
+	justify-items: center;
+	gap: 0.3rem;
+	min-width: 0;
+	opacity: 0.45;
+	transition: opacity 0.2s ease;
+}
+
+.xciv-booking__step-item.is-active,
+.xciv-booking__step-item.is-done {
+	opacity: 1;
+}
+
+.xciv-booking__step-num {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 1.65rem;
+	height: 1.65rem;
+	border: 1px solid rgba(242, 239, 232, 0.18);
+	font-size: 0.72rem;
+	font-weight: 600;
+	letter-spacing: 0.04em;
+	color: var(--wp--preset--color--muted, #9aa3ad);
+}
+
+.xciv-booking__step-item.is-active .xciv-booking__step-num {
+	border-color: var(--wp--preset--color--accent, #c4a35a);
+	background: rgba(196, 163, 90, 0.14);
+	color: var(--wp--preset--color--accent, #c4a35a);
+}
+
+.xciv-booking__step-item.is-done .xciv-booking__step-num {
+	border-color: rgba(196, 163, 90, 0.55);
+	color: var(--wp--preset--color--accent, #c4a35a);
+}
+
+.xciv-booking__step-label {
+	font-size: 0.68rem;
+	letter-spacing: 0.04em;
+	text-transform: uppercase;
+	text-align: center;
+	color: var(--wp--preset--color--muted, #9aa3ad);
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	max-width: 100%;
+}
+
+.xciv-booking__step-item.is-active .xciv-booking__step-label {
+	color: var(--wp--preset--color--ink, #f2efe8);
+}
+
+.xciv-booking__step-status {
+	margin: 0;
+	font-size: 0.8rem;
+	color: var(--wp--preset--color--muted, #9aa3ad);
+}
+
+.xciv-booking__section {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	display: grid;
+	gap: 0.85rem;
+	min-inline-size: 0;
+}
+
+.xciv-booking__section[hidden] {
+	display: none !important;
+}
+
+.xciv-booking__nav {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.75rem;
+	align-items: center;
+}
+
+.xciv-booking__nav-btn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding: 0.85rem 1.35rem;
+	font: inherit;
+	font-weight: 600;
+	color: var(--wp--preset--color--accent-ink, #0c0f12);
+	background: var(--wp--preset--color--accent, #c4a35a);
+	border: 0;
+	cursor: pointer;
+}
+
+.xciv-booking__nav-btn:hover {
+	background: #d4b56a;
+}
+
+.xciv-booking__nav-btn--ghost {
+	color: var(--wp--preset--color--ink, #f2efe8);
+	background: transparent;
+	border: 1px solid rgba(242, 239, 232, 0.18);
+}
+
+.xciv-booking__nav-btn--ghost:hover {
+	border-color: rgba(196, 163, 90, 0.55);
+	background: rgba(196, 163, 90, 0.08);
+}
+
+.xciv-booking__nav-btn[hidden],
+.xciv-booking__submit[hidden] {
+	display: none !important;
+}
+
+@media (max-width: 40rem) {
+	.xciv-booking__step-label {
+		display: none;
+	}
+
+	.xciv-booking__steps {
+		gap: 0.25rem;
+	}
+}
+
+.xciv-booking__legend {
+	padding: 0;
+	margin: 0 0 0.15rem;
+	font-size: 0.78rem;
+	font-weight: 600;
+	letter-spacing: 0.06em;
+	text-transform: uppercase;
+	color: var(--wp--preset--color--accent, #c4a35a);
+}
+
+.xciv-booking__grid {
+	display: grid;
+	gap: 1rem;
+	grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+}
+
+.xciv-booking__row {
+	display: grid;
+	gap: 0.4rem;
+}
+
+.xciv-booking__row[hidden],
+.xciv-booking__addon[hidden],
+.xciv-booking__grid[hidden],
+.xciv-booking__check[hidden] {
+	display: none !important;
+}
+
+.xciv-booking__row label,
+.xciv-booking__check {
+	font-size: 0.9rem;
+	font-weight: 500;
+	color: var(--wp--preset--color--muted, #9aa3ad);
+}
+
+.xciv-booking__row input,
+.xciv-booking__row textarea,
+.xciv-booking__row select {
+	width: 100%;
+	padding: 0.75rem 0.85rem;
+	font: inherit;
+	color: var(--wp--preset--color--ink, #f2efe8);
+	background: var(--wp--preset--color--bg-elevated, #151a1f);
+	border: 1px solid rgba(242, 239, 232, 0.12);
+	border-radius: 0;
+}
+
+.xciv-booking__row select {
+	appearance: none;
+	background-image: linear-gradient(45deg, transparent 50%, #9aa3ad 50%),
+		linear-gradient(135deg, #9aa3ad 50%, transparent 50%);
+	background-position: calc(100% - 1.1rem) 1.15rem, calc(100% - 0.75rem) 1.15rem;
+	background-size: 0.35rem 0.35rem, 0.35rem 0.35rem;
+	background-repeat: no-repeat;
+	padding-right: 2rem;
+}
+
+.xciv-booking__row input:focus,
+.xciv-booking__row textarea:focus,
+.xciv-booking__row select:focus {
+	outline: 2px solid rgba(196, 163, 90, 0.45);
+	outline-offset: 1px;
+}
+
+.xciv-booking__choices,
+.xciv-booking__addons {
+	display: grid;
+	gap: 0.65rem;
+}
+
+.xciv-booking__choice,
+.xciv-booking__addon {
+	display: grid;
+	grid-template-columns: auto 1fr;
+	gap: 0.75rem;
+	align-items: start;
+	padding: 0.85rem 0.9rem;
+	border: 1px solid rgba(242, 239, 232, 0.12);
+	cursor: pointer;
+	transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.xciv-booking__choice:hover,
+.xciv-booking__addon:hover {
+	border-color: rgba(196, 163, 90, 0.45);
+}
+
+.xciv-booking__choice:has(input:checked),
+.xciv-booking__addon:has(input:checked) {
+	border-color: var(--wp--preset--color--accent, #c4a35a);
+	background: rgba(196, 163, 90, 0.08);
+}
+
+.xciv-booking__choice input,
+.xciv-booking__addon input,
+.xciv-booking__check input {
+	margin-top: 0.2rem;
+	accent-color: var(--wp--preset--color--accent, #c4a35a);
+}
+
+.xciv-booking__choice-body,
+.xciv-booking__addon-body {
+	display: grid;
+	gap: 0.2rem;
+}
+
+.xciv-booking__choice-label,
+.xciv-booking__addon-label {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.5rem;
+	align-items: baseline;
+	font-size: 0.95rem;
+	font-weight: 600;
+	color: var(--wp--preset--color--ink, #f2efe8);
+}
+
+.xciv-booking__addon-price {
+	font-size: 0.8rem;
+	font-weight: 500;
+	color: var(--wp--preset--color--accent, #c4a35a);
+}
+
+.xciv-booking__choice-desc,
+.xciv-booking__addon-desc {
+	font-size: 0.82rem;
+	line-height: 1.4;
+	color: var(--wp--preset--color--muted, #9aa3ad);
+}
+
+.xciv-booking__check {
+	display: grid;
+	grid-template-columns: auto 1fr;
+	gap: 0.7rem;
+	align-items: start;
+	line-height: 1.45;
+	cursor: pointer;
+}
+
+.xciv-booking__check span {
+	color: var(--wp--preset--color--ink, #f2efe8);
+	font-weight: 400;
+}
+
+.xciv-booking__submit {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: fit-content;
+	padding: 0.85rem 1.35rem;
+	font: inherit;
+	font-weight: 600;
+	color: var(--wp--preset--color--accent-ink, #0c0f12);
+	background: var(--wp--preset--color--accent, #c4a35a);
+	border: 0;
+	cursor: pointer;
+}
+
+.xciv-booking__submit:hover {
+	background: #d4b56a;
+}
+
+.xciv-booking__submit:disabled {
+	opacity: 0.7;
+	cursor: default;
+}
+
+.xciv-booking__hint {
+	margin: 0;
+	font-size: 0.85rem;
+	color: var(--wp--preset--color--muted, #9aa3ad);
+}
+
+.xciv-booking__hint[data-error="true"] {
+	color: #e8a0a0;
+}
+
+.xciv-booking__status {
+	margin: 0;
+	font-size: 0.95rem;
+	color: var(--wp--preset--color--accent, #c4a35a);
+}
+
+.xciv-booking__status[data-error="true"] {
+	color: #e8a0a0;
+}
+
+.xciv-booking__editor-note {
+	margin: 0;
+	color: var(--wp--preset--color--muted, #9aa3ad);
+	font-size: 0.95rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.xciv-booking__choice,
+	.xciv-booking__addon {
+		transition: none;
+	}
+}

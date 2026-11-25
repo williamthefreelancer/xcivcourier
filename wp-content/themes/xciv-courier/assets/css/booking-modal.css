@@ -1,0 +1,118 @@
+/* Booking popup — opens from CTA / any [data-xciv-booking-open] */
+
+.xciv-booking-modal {
+	position: fixed;
+	inset: 0;
+	z-index: 100000;
+	display: grid;
+	place-items: end center;
+	padding: 1rem;
+	background: rgba(0, 0, 0, 0.72);
+	opacity: 0;
+	visibility: hidden;
+	transition: opacity 0.2s ease, visibility 0.2s ease;
+}
+
+.xciv-booking-modal.is-open {
+	opacity: 1;
+	visibility: visible;
+}
+
+.xciv-booking-modal__panel {
+	position: relative;
+	width: min(100%, 40rem);
+	max-height: min(92vh, 52rem);
+	overflow: auto;
+	margin-bottom: 0.5rem;
+	padding: 1.5rem 1.35rem 1.75rem;
+	background: #151a1f;
+	border: 1px solid rgba(242, 239, 232, 0.14);
+	color: #f2efe8;
+	transform: translateY(1.25rem);
+	transition: transform 0.22s ease;
+}
+
+.xciv-booking-modal.is-open .xciv-booking-modal__panel {
+	transform: translateY(0);
+}
+
+.xciv-booking-modal__close {
+	position: absolute;
+	top: 0.65rem;
+	right: 0.65rem;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 2.25rem;
+	height: 2.25rem;
+	padding: 0;
+	font: inherit;
+	font-size: 1.35rem;
+	line-height: 1;
+	color: #f2efe8;
+	background: transparent;
+	border: 1px solid rgba(242, 239, 232, 0.18);
+	cursor: pointer;
+}
+
+.xciv-booking-modal__close:hover {
+	border-color: #c4a35a;
+	color: #c4a35a;
+}
+
+.xciv-booking-modal .xciv-booking {
+	max-width: none;
+}
+
+.xciv-booking-modal .xciv-booking__title {
+	padding-right: 2rem;
+}
+
+body.xciv-booking-modal-open {
+	overflow: hidden;
+}
+
+.xciv-booking-cta {
+	text-align: center;
+	margin-top: 1rem;
+}
+
+.xciv-booking-open {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	margin-top: 0.75rem;
+	padding: 0.85rem 1.35rem;
+	font-family: inherit;
+	font-size: 0.95rem;
+	font-weight: 600;
+	color: #0c0f12;
+	background: #c4a35a;
+	border: 0;
+	cursor: pointer;
+	text-decoration: none;
+}
+
+.xciv-booking-open:hover {
+	background: #d4b56a;
+	color: #0c0f12;
+	text-decoration: none;
+}
+
+@media (min-width: 640px) {
+	.xciv-booking-modal {
+		place-items: center;
+		padding: 1.5rem;
+	}
+
+	.xciv-booking-modal__panel {
+		margin-bottom: 0;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.xciv-booking-modal,
+	.xciv-booking-modal__panel {
+		transition: none;
+	}
+}
