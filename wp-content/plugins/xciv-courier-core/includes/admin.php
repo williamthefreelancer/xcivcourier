@@ -263,7 +263,14 @@ function xciv_core_render_dashboard(): void {
 
 				<article class="xciv-admin__card">
 					<h2><?php esc_html_e( 'Front header', 'xciv-courier-core' ); ?></h2>
-					<p><?php esc_html_e( 'Logo only (site icon mark removed). Lead Delivery reveals Car / Trike / Uber chips driven by these settings.', 'xciv-courier-core' ); ?></p>
+					<p><?php esc_html_e( 'Lead Delivery shows rider chips. Pickup & Location shows hub chips + Near me. Defaults live under Map → Fulfillment.', 'xciv-courier-core' ); ?></p>
+					<?php
+					$ff = is_array( $settings['fulfillment'] ?? null ) ? $settings['fulfillment'] : array();
+					?>
+					<ul class="xciv-admin__pills">
+						<li class="is-on"><?php echo esc_html( (string) ( $ff['default_mode'] ?? 'delivery' ) ); ?></li>
+						<li class="is-on"><?php echo esc_html( (string) ( $ff['default_hub'] ?? 'ucity' ) ); ?></li>
+					</ul>
 				</article>
 			</section>
 			<?php
@@ -299,12 +306,20 @@ function xciv_core_render_rider_page(): void {
 				<?php if ( ! empty( $settings['map']['show_radius'] ) ) : ?>
 					<input type="hidden" name="<?php echo esc_attr( XCIV_CORE_OPTION ); ?>[map][show_radius]" value="1">
 				<?php endif; ?>
+				<?php
+				$ff = is_array( $settings['fulfillment'] ?? null ) ? $settings['fulfillment'] : array();
+				?>
+				<input type="hidden" name="<?php echo esc_attr( XCIV_CORE_OPTION ); ?>[fulfillment][default_mode]" value="<?php echo esc_attr( (string) ( $ff['default_mode'] ?? 'delivery' ) ); ?>">
+				<input type="hidden" name="<?php echo esc_attr( XCIV_CORE_OPTION ); ?>[fulfillment][default_hub]" value="<?php echo esc_attr( (string) ( $ff['default_hub'] ?? 'ucity' ) ); ?>">
 				<?php foreach ( (array) $settings['hubs'] as $i => $hub ) : ?>
 					<input type="hidden" name="<?php echo esc_attr( XCIV_CORE_OPTION ); ?>[hubs][<?php echo (int) $i; ?>][id]" value="<?php echo esc_attr( (string) $hub['id'] ); ?>">
 					<input type="hidden" name="<?php echo esc_attr( XCIV_CORE_OPTION ); ?>[hubs][<?php echo (int) $i; ?>][label]" value="<?php echo esc_attr( (string) $hub['label'] ); ?>">
 					<input type="hidden" name="<?php echo esc_attr( XCIV_CORE_OPTION ); ?>[hubs][<?php echo (int) $i; ?>][zip]" value="<?php echo esc_attr( (string) $hub['zip'] ); ?>">
 					<input type="hidden" name="<?php echo esc_attr( XCIV_CORE_OPTION ); ?>[hubs][<?php echo (int) $i; ?>][lat]" value="<?php echo esc_attr( (string) $hub['lat'] ); ?>">
 					<input type="hidden" name="<?php echo esc_attr( XCIV_CORE_OPTION ); ?>[hubs][<?php echo (int) $i; ?>][lng]" value="<?php echo esc_attr( (string) $hub['lng'] ); ?>">
+					<?php if ( ! isset( $hub['pickup_enabled'] ) || ! empty( $hub['pickup_enabled'] ) ) : ?>
+						<input type="hidden" name="<?php echo esc_attr( XCIV_CORE_OPTION ); ?>[hubs][<?php echo (int) $i; ?>][pickup_enabled]" value="1">
+					<?php endif; ?>
 				<?php endforeach; ?>
 				<input type="hidden" name="<?php echo esc_attr( XCIV_CORE_OPTION ); ?>[lead_rider][base_address]" value="<?php echo esc_attr( (string) ( $lr['base_address'] ?? '' ) ); ?>">
 				<input type="hidden" name="<?php echo esc_attr( XCIV_CORE_OPTION ); ?>[lead_rider][base_lat]" value="<?php echo esc_attr( (string) ( $lr['base_lat'] ?? '' ) ); ?>">
@@ -487,6 +502,31 @@ function xciv_core_render_map_page(): void {
 					<label class="xciv-admin__check"><input type="checkbox" name="<?php echo esc_attr( XCIV_CORE_OPTION ); ?>[map][show_radius]" value="1" <?php checked( ! empty( $map['show_radius'] ) ); ?>> <?php esc_html_e( 'Show rider / free radius rings', 'xciv-courier-core' ); ?></label>
 				</section>
 
+				<?php
+				$ff = is_array( $settings['fulfillment'] ?? null ) ? $settings['fulfillment'] : array( 'default_mode' => 'delivery', 'default_hub' => 'ucity' );
+				?>
+				<section class="xciv-admin__card">
+					<h2><?php esc_html_e( 'Fulfillment (header)', 'xciv-courier-core' ); ?></h2>
+					<p class="description"><?php esc_html_e( 'Controls the Lead Delivery / Pickup & Location tab defaults and which hubs appear as pickup chips.', 'xciv-courier-core' ); ?></p>
+					<p>
+						<label for="xciv-fulfillment-mode"><?php esc_html_e( 'Default header mode', 'xciv-courier-core' ); ?></label><br>
+						<select id="xciv-fulfillment-mode" name="<?php echo esc_attr( XCIV_CORE_OPTION ); ?>[fulfillment][default_mode]">
+							<option value="delivery" <?php selected( (string) ( $ff['default_mode'] ?? '' ), 'delivery' ); ?>><?php esc_html_e( 'Lead Delivery', 'xciv-courier-core' ); ?></option>
+							<option value="pickup" <?php selected( (string) ( $ff['default_mode'] ?? '' ), 'pickup' ); ?>><?php esc_html_e( 'Pickup & Location', 'xciv-courier-core' ); ?></option>
+						</select>
+					</p>
+					<p>
+						<label for="xciv-default-hub"><?php esc_html_e( 'Default pickup hub', 'xciv-courier-core' ); ?></label><br>
+						<select id="xciv-default-hub" name="<?php echo esc_attr( XCIV_CORE_OPTION ); ?>[fulfillment][default_hub]">
+							<?php foreach ( (array) $settings['hubs'] as $hub ) : ?>
+								<option value="<?php echo esc_attr( (string) $hub['id'] ); ?>" <?php selected( (string) ( $ff['default_hub'] ?? '' ), (string) $hub['id'] ); ?>>
+									<?php echo esc_html( (string) ( $hub['label'] ?? $hub['id'] ) ); ?>
+								</option>
+							<?php endforeach; ?>
+						</select>
+					</p>
+				</section>
+
 				<section class="xciv-admin__card">
 					<h2><?php esc_html_e( 'Hubs', 'xciv-courier-core' ); ?></h2>
 					<?php foreach ( (array) $settings['hubs'] as $i => $hub ) : ?>
@@ -503,6 +543,10 @@ function xciv_core_render_map_page(): void {
 							</label>
 							<label><?php esc_html_e( 'Lng', 'xciv-courier-core' ); ?>
 								<input type="number" step="0.0001" name="<?php echo esc_attr( XCIV_CORE_OPTION ); ?>[hubs][<?php echo (int) $i; ?>][lng]" value="<?php echo esc_attr( (string) $hub['lng'] ); ?>">
+							</label>
+							<label class="xciv-admin__check">
+								<input type="checkbox" name="<?php echo esc_attr( XCIV_CORE_OPTION ); ?>[hubs][<?php echo (int) $i; ?>][pickup_enabled]" value="1" <?php checked( ! isset( $hub['pickup_enabled'] ) || ! empty( $hub['pickup_enabled'] ) ); ?>>
+								<?php esc_html_e( 'Pickup enabled', 'xciv-courier-core' ); ?>
 							</label>
 						</div>
 					<?php endforeach; ?>

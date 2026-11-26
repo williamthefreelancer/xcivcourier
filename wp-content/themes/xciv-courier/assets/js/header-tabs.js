@@ -1,6 +1,33 @@
 (function () {
 	'use strict';
 
+	function haversineMiles(lat1, lng1, lat2, lng2) {
+		var toRad = Math.PI / 180;
+		var dLat = (lat2 - lat1) * toRad;
+		var dLng = (lng2 - lng1) * toRad;
+		var a =
+			Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+			Math.cos(lat1 * toRad) * Math.cos(lat2 * toRad) * Math.sin(dLng / 2) * Math.sin(dLng / 2);
+		return 3958.8 * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+	}
+
+	function nearestHubId(hubs, lat, lng) {
+		var bestId = null;
+		var bestDist = Infinity;
+		Object.keys(hubs || {}).forEach(function (id) {
+			var hub = hubs[id];
+			if (!hub || hub.lat == null || hub.lng == null) {
+				return;
+			}
+			var d = haversineMiles(lat, lng, Number(hub.lat), Number(hub.lng));
+			if (d < bestDist) {
+				bestDist = d;
+				bestId = id;
+			}
+		});
+		return bestId;
+	}
+
 	function initFulfillmentTabs() {
 		var root = document.querySelector('[data-xciv-header-tabs]');
 		if (!root) {
@@ -10,8 +37,21 @@
 		var tabs = Array.prototype.slice.call(root.querySelectorAll('[data-xciv-fulfillment]'));
 		var thumb = root.querySelector('[data-xciv-header-thumb]');
 		var riderRoot = document.querySelector('[data-xciv-rider-modes]');
+		var hubRoot = document.querySelector('[data-xciv-hub-modes]');
 		var storageKey = 'xciv_fulfillment_mode';
 		var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+		var hubConfig = { defaultMode: 'delivery' };
+
+		if (hubRoot) {
+			var hubConfigEl = hubRoot.querySelector('[data-xciv-hub-config]');
+			try {
+				if (hubConfigEl && hubConfigEl.textContent) {
+					hubConfig = Object.assign(hubConfig, JSON.parse(hubConfigEl.textContent));
+				}
+			} catch (e) {
+				/* ignore */
+			}
+		}
 
 		function moveThumb(activeTab, animate) {
 			if (!thumb || !activeTab) {
@@ -32,13 +72,16 @@
 			}
 		}
 
-		function syncRiderVisibility(mode) {
-			if (!riderRoot) {
-				return;
+		function syncModePanels(mode) {
+			var isDelivery = mode === 'delivery';
+			if (riderRoot) {
+				riderRoot.hidden = !isDelivery;
+				riderRoot.setAttribute('aria-hidden', isDelivery ? 'false' : 'true');
 			}
-			var show = mode === 'delivery';
-			riderRoot.hidden = !show;
-			riderRoot.setAttribute('aria-hidden', show ? 'false' : 'true');
+			if (hubRoot) {
+				hubRoot.hidden = isDelivery;
+				hubRoot.setAttribute('aria-hidden', isDelivery ? 'true' : 'false');
+			}
 		}
 
 		function setActive(mode, animate) {
@@ -55,7 +98,7 @@
 
 			moveThumb(activeTab, animate !== false);
 			document.documentElement.setAttribute('data-xciv-fulfillment', mode);
-			syncRiderVisibility(mode);
+			syncModePanels(mode);
 
 			try {
 				window.localStorage.setItem(storageKey, mode);
@@ -77,7 +120,12 @@
 			saved = null;
 		}
 
-		var initial = saved === 'delivery' || saved === 'pickup' ? saved : 'delivery';
+		var initial =
+			saved === 'delivery' || saved === 'pickup'
+				? saved
+				: hubConfig.defaultMode === 'pickup'
+					? 'pickup'
+					: 'delivery';
 		setActive(initial, false);
 
 		tabs.forEach(function (tab) {
@@ -163,6 +211,119 @@
 		});
 	}
 
+	function initHubModes() {
+		var root = document.querySelector('[data-xciv-hub-modes]');
+		if (!root) {
+			return;
+		}
+
+		var buttons = Array.prototype.slice.call(root.querySelectorAll('[data-xciv-hub]'));
+		var locateBtn = root.querySelector('[data-xciv-hub-locate]');
+		var hint = root.querySelector('[data-xciv-hub-hint]');
+		var configEl = root.querySelector('[data-xciv-hub-config]');
+		var storageKey = 'xciv_pickup_hub';
+		var config = { defaultHub: 'ucity', hubs: {}, i18n: {} };
+
+		try {
+			if (configEl && configEl.textContent) {
+				config = Object.assign(config, JSON.parse(configEl.textContent));
+			}
+		} catch (e) {
+			/* ignore */
+		}
+
+		function applyHub(hubId, persist, extra) {
+			if (!config.hubs[hubId]) {
+				hubId = config.defaultHub || Object.keys(config.hubs)[0] || '';
+			}
+			if (!hubId || !config.hubs[hubId]) {
+				return;
+			}
+
+			var hub = config.hubs[hubId];
+
+			buttons.forEach(function (btn) {
+				var active = btn.getAttribute('data-xciv-hub') === hubId;
+				btn.classList.toggle('is-active', active);
+				btn.setAttribute('aria-pressed', active ? 'true' : 'false');
+			});
+
+			document.documentElement.setAttribute('data-xciv-hub', hubId);
+
+			if (hint) {
+				hint.textContent = hub.label || hubId;
+			}
+
+			if (persist !== false) {
+				try {
+					window.localStorage.setItem(storageKey, hubId);
+				} catch (e) {
+					/* ignore */
+				}
+			}
+
+			window.dispatchEvent(
+				new CustomEvent('xciv:hub', {
+					detail: Object.assign(
+						{
+							hubId: hubId,
+							hub: hub,
+						},
+						extra || {}
+					),
+				})
+			);
+		}
+
+		var saved = null;
+		try {
+			saved = window.localStorage.getItem(storageKey);
+		} catch (e) {
+			saved = null;
+		}
+
+		applyHub(saved || config.defaultHub, false);
+
+		buttons.forEach(function (btn) {
+			btn.addEventListener('click', function () {
+				applyHub(btn.getAttribute('data-xciv-hub') || config.defaultHub, true);
+			});
+		});
+
+		if (locateBtn) {
+			if (!navigator.geolocation) {
+				locateBtn.hidden = true;
+			} else {
+				locateBtn.addEventListener('click', function () {
+					locateBtn.classList.add('is-busy');
+					locateBtn.disabled = true;
+					navigator.geolocation.getCurrentPosition(
+						function (pos) {
+							locateBtn.classList.remove('is-busy');
+							locateBtn.disabled = false;
+							var id = nearestHubId(config.hubs, pos.coords.latitude, pos.coords.longitude);
+							if (id) {
+								applyHub(id, true, {
+									fromGeolocation: true,
+									lat: pos.coords.latitude,
+									lng: pos.coords.longitude,
+								});
+							}
+						},
+						function () {
+							locateBtn.classList.remove('is-busy');
+							locateBtn.disabled = false;
+							if (hint && config.i18n && config.i18n.locateFail) {
+								hint.textContent = config.i18n.locateFail;
+							}
+						},
+						{ enableHighAccuracy: false, timeout: 10000, maximumAge: 60000 }
+					);
+				});
+			}
+		}
+	}
+
 	function initProfileMenu() {
 		var roots = Array.prototype.slice.call(document.querySelectorAll('[data-xciv-header-profile]'));
 		if (!roots.length) {
@@ -231,5 +392,6 @@
 
 	initFulfillmentTabs();
 	initRiderModes();
+	initHubModes();
 	initProfileMenu();
 })();

@@ -345,6 +345,16 @@
 			window.addEventListener('xciv:rider', function () {
 				drawRadii(hubCenter);
 			});
+
+			window.addEventListener('xciv:hub', function (event) {
+				var hub = event.detail && event.detail.hub;
+				if (!hub || hub.lat == null || hub.lng == null) {
+					return;
+				}
+				hubCenter = [hub.lng, hub.lat];
+				map.flyTo({ center: hubCenter, zoom: Math.max(map.getZoom(), 11) });
+				drawRadii(hubCenter);
+			});
 		});
 
 		var locateBtn = qs(root, '[data-xciv-map-locate]');
@@ -559,6 +569,16 @@
 		drawRadii(radiusCenter);
 
 		window.addEventListener('xciv:rider', function () {
+			drawRadii(radiusCenter);
+		});
+
+		window.addEventListener('xciv:hub', function (event) {
+			var hub = event.detail && event.detail.hub;
+			if (!hub || hub.lat == null || hub.lng == null) {
+				return;
+			}
+			radiusCenter = [hub.lng, hub.lat];
+			map.setView([hub.lat, hub.lng], Math.max(map.getZoom(), 11));
 			drawRadii(radiusCenter);
 		});
 

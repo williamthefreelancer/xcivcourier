@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'XCIV_COURIER_VERSION', '0.9.5' );
+define( 'XCIV_COURIER_VERSION', '0.9.6' );
 define( 'XCIV_COURIER_DIR', get_template_directory() );
 define( 'XCIV_COURIER_URI', get_template_directory_uri() );
 
@@ -24,6 +24,7 @@ require_once XCIV_COURIER_DIR . '/inc/shop-catalog.php';
 require_once XCIV_COURIER_DIR . '/inc/service-listings.php';
 require_once XCIV_COURIER_DIR . '/inc/header-profile.php';
 require_once XCIV_COURIER_DIR . '/inc/lead-rider.php';
+require_once XCIV_COURIER_DIR . '/inc/pickup-hubs.php';
 require_once XCIV_COURIER_DIR . '/inc/breadcrumbs.php';
 
 /**

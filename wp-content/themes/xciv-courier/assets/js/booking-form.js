@@ -6,6 +6,7 @@
 	const services = cfg.services || {};
 	const addons = cfg.addons || {};
 	const venues = cfg.venues || {};
+	const hubs = cfg.hubs || {};
 	const basePrice = Number(cfg.basePrice || 50);
 	const extraRate = Number(cfg.extraHourRate || 25);
 	const i18n = cfg.i18n || {};
@@ -69,7 +70,12 @@
 		const estimate = form.querySelector('[data-xciv-estimate]');
 		const estimateFinal = form.querySelector('[data-xciv-estimate-final]');
 		const deliveryHint = form.querySelector('[data-xciv-delivery-hint]');
+		const hubHint = form.querySelector('[data-xciv-hub-hint]');
 		const venueIdInput = form.querySelector('[data-xciv-venue-id], input[name="venue_id"]');
+		const fulfillmentInput = form.querySelector('[data-xciv-fulfillment-mode], input[name="fulfillment_mode"]');
+		const hubIdInput = form.querySelector('[data-xciv-hub-id], input[name="hub_id"]');
+		const locationInput = form.querySelector('[data-xciv-location], input[name="location"]');
+		const cityInput = form.querySelector('[data-xciv-city], input[name="city"]');
 		const serviceInputs = form.querySelectorAll('[data-xciv-service]');
 		const startInput = form.querySelector('[data-xciv-start]');
 		const endInput = form.querySelector('[data-xciv-end]');
@@ -121,6 +127,65 @@
 				deliveryHint.textContent = i18n.deliveryFree || 'Within hub range · no delivery fee';
 			}
 			deliveryHint.hidden = false;
+		};
+
+		const syncHubHint = (mode, hub) => {
+			if (!hubHint) return;
+			if (!hub) {
+				hubHint.hidden = true;
+				hubHint.textContent = '';
+				return;
+			}
+			const label = hub.label || hub.id || '';
+			const zip = hub.zip ? ` (${hub.zip})` : '';
+			const tpl =
+				mode === 'pickup'
+					? i18n.hubPickup || 'Pickup hub: %s — meet / collect near this area (ZIP shown publicly).'
+					: i18n.hubDelivery || 'Lead delivery from %s hub area.';
+			hubHint.textContent = tpl.replace('%s', `${label}${zip}`);
+			hubHint.hidden = false;
+		};
+
+		const applyFulfillment = (mode) => {
+			const next = mode === 'pickup' ? 'pickup' : 'delivery';
+			if (fulfillmentInput) fulfillmentInput.value = next;
+			const hubId = hubIdInput ? String(hubIdInput.value || '') : '';
+			syncHubHint(next, hubs[hubId] || null);
+
+			// Pickup prefers secure_pickup when user hasn't moved off the default hold_spot.
+			if (next === 'pickup') {
+				const checked = form.querySelector('[data-xciv-service]:checked');
+				if (checked && checked.value === 'hold_spot') {
+					const pickupRadio = form.querySelector('[data-xciv-service][value="secure_pickup"]');
+					if (pickupRadio) {
+						pickupRadio.checked = true;
+						refresh();
+					}
+				}
+			}
+		};
+
+		const applyHub = (hubId, hub) => {
+			const resolved = hub || hubs[hubId] || null;
+			if (hubIdInput) hubIdInput.value = hubId || '';
+			const mode = fulfillmentInput ? fulfillmentInput.value : 'delivery';
+			syncHubHint(mode, resolved);
+
+			if (resolved) {
+				if (cityInput && !cityInput.value.trim()) {
+					cityInput.value = resolved.label || '';
+				}
+				if (
+					mode === 'pickup' &&
+					locationInput &&
+					!locationInput.value.trim() &&
+					!venueIdInput?.value
+				) {
+					locationInput.value = resolved.zip
+						? `${resolved.label} hub · ${resolved.zip}`
+						: `${resolved.label} hub`;
+				}
+			}
 		};
 
 		const setStatus = (message, isError = false) => {
@@ -248,6 +313,29 @@
 			updateDeliveryHint();
 			syncAddons();
 		});
+
+		window.addEventListener('xciv:fulfillment', (event) => {
+			const mode = event.detail && event.detail.mode;
+			if (mode) applyFulfillment(mode);
+		});
+
+		window.addEventListener('xciv:hub', (event) => {
+			const detail = event.detail || {};
+			if (detail.hubId) applyHub(detail.hubId, detail.hub);
+		});
+
+		// Seed from header / admin defaults.
+		try {
+			const ffAttr = document.documentElement.getAttribute('data-xciv-fulfillment');
+			const hubAttr = document.documentElement.getAttribute('data-xciv-hub');
+			const ff = ffAttr || (cfg.fulfillment && cfg.fulfillment.default_mode) || 'delivery';
+			const hubId =
+				hubAttr || (cfg.fulfillment && cfg.fulfillment.default_hub) || Object.keys(hubs)[0] || '';
+			applyFulfillment(ff);
+			if (hubId) applyHub(hubId, hubs[hubId]);
+		} catch (e) {
+			/* ignore */
+		}
 
 		const showStep = (step) => {
 			currentStep = Math.min(Math.max(1, step), stepCount);

@@ -253,6 +253,16 @@ function xciv_booking_js_config(): array {
 		}
 	}
 
+	$hubs = array();
+	if ( function_exists( 'xciv_pickup_hubs' ) ) {
+		foreach ( xciv_pickup_hubs() as $hub ) {
+			$hubs[ $hub['id'] ] = $hub;
+		}
+	}
+	$ff = function_exists( 'xciv_fulfillment_defaults' )
+		? xciv_fulfillment_defaults()
+		: array( 'default_mode' => 'delivery', 'default_hub' => 'ucity' );
+
 	return array(
 		'ajaxUrl'       => admin_url( 'admin-ajax.php' ),
 		'nonce'         => wp_create_nonce( 'xciv_booking' ),
@@ -263,6 +273,8 @@ function xciv_booking_js_config(): array {
 		'services'      => $services,
 		'addons'        => $addons,
 		'venues'        => $venues,
+		'hubs'          => $hubs,
+		'fulfillment'   => $ff,
 		'wooReady'      => class_exists( 'WooCommerce' ),
 		'i18n'          => array(
 			'required'      => __( 'Please complete the required fields.', 'xciv-courier' ),
@@ -278,6 +290,10 @@ function xciv_booking_js_config(): array {
 			'deliveryFree'  => __( 'Within hub range · no delivery fee', 'xciv-courier' ),
 			/* translators: 1: fee dollars, 2: miles, 3: minutes */
 			'deliveryHint'  => __( '+$%1$s delivery · %2$s mi · ~%3$s min drive from your hubs', 'xciv-courier' ),
+			/* translators: %s: hub label */
+			'hubPickup'     => __( 'Pickup hub: %s — meet / collect near this area (ZIP shown publicly).', 'xciv-courier' ),
+			/* translators: %s: hub label */
+			'hubDelivery'   => __( 'Lead delivery from %s hub area.', 'xciv-courier' ),
 		),
 	);
 }
@@ -312,6 +328,12 @@ function xciv_booking_ajax_add_to_cart(): void {
 	if ( ! $calc['valid'] ) {
 		wp_send_json_error( array( 'message' => $calc['message'] ), 400 );
 	}
+
+	$fulfillment_mode = sanitize_key( wp_unslash( (string) ( $_POST['fulfillment_mode'] ?? 'delivery' ) ) );
+	if ( ! in_array( $fulfillment_mode, array( 'delivery', 'pickup' ), true ) ) {
+		$fulfillment_mode = 'delivery';
+	}
+	$hub_id = sanitize_key( wp_unslash( (string) ( $_POST['hub_id'] ?? '' ) ) );
 
 	$venue_id      = sanitize_key( wp_unslash( (string) ( $_POST['venue_id'] ?? '' ) ) );
 	$delivery_fee  = 0.0;
@@ -353,6 +375,24 @@ function xciv_booking_ajax_add_to_cart(): void {
 	}
 	if ( $delivery_meta !== '' ) {
 		$meta['Delivery / travel'] = $delivery_meta;
+	}
+	$meta['Fulfillment'] = $fulfillment_mode === 'pickup'
+		? __( 'Pickup & Location', 'xciv-courier' )
+		: __( 'Lead Delivery', 'xciv-courier' );
+	if ( $hub_id !== '' ) {
+		$hub_label = $hub_id;
+		if ( function_exists( 'xciv_pickup_hubs' ) ) {
+			foreach ( xciv_pickup_hubs() as $hub ) {
+				if ( (string) ( $hub['id'] ?? '' ) === $hub_id ) {
+					$hub_label = (string) ( $hub['label'] ?? $hub_id );
+					if ( ! empty( $hub['zip'] ) ) {
+						$hub_label .= ' · ' . $hub['zip'];
+					}
+					break;
+				}
+			}
+		}
+		$meta['Service hub'] = $hub_label;
 	}
 
 	$optional_map = array(

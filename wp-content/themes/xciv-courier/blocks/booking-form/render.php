@@ -91,14 +91,17 @@ $steps = array(
 		<fieldset class="xciv-booking__section" data-xciv-step-panel="2" hidden>
 			<legend class="xciv-booking__legend"><?php esc_html_e( '2 · Location', 'xciv-courier' ); ?></legend>
 			<input type="hidden" name="venue_id" value="" data-xciv-venue-id>
+			<input type="hidden" name="fulfillment_mode" value="delivery" data-xciv-fulfillment-mode>
+			<input type="hidden" name="hub_id" value="" data-xciv-hub-id>
+			<p class="xciv-booking__hint xciv-booking__hint--hub" data-xciv-hub-hint hidden></p>
 			<div class="xciv-booking__row">
 				<label for="<?php echo esc_attr( $uid ); ?>-location"><?php esc_html_e( 'Address / venue', 'xciv-courier' ); ?></label>
-				<input id="<?php echo esc_attr( $uid ); ?>-location" name="location" type="text" required placeholder="<?php esc_attr_e( 'Where should William wait?', 'xciv-courier' ); ?>">
+				<input id="<?php echo esc_attr( $uid ); ?>-location" name="location" type="text" required placeholder="<?php esc_attr_e( 'Where should William wait?', 'xciv-courier' ); ?>" data-xciv-location>
 			</div>
 			<div class="xciv-booking__grid">
 				<div class="xciv-booking__row">
 					<label for="<?php echo esc_attr( $uid ); ?>-city"><?php esc_html_e( 'City / area', 'xciv-courier' ); ?></label>
-					<input id="<?php echo esc_attr( $uid ); ?>-city" name="city" type="text" placeholder="<?php esc_attr_e( 'Charlotte, Harrisburg…', 'xciv-courier' ); ?>">
+					<input id="<?php echo esc_attr( $uid ); ?>-city" name="city" type="text" placeholder="<?php esc_attr_e( 'Charlotte, Harrisburg…', 'xciv-courier' ); ?>" data-xciv-city>
 				</div>
 				<div class="xciv-booking__row">
 					<label for="<?php echo esc_attr( $uid ); ?>-parking"><?php esc_html_e( 'Parking / access', 'xciv-courier' ); ?></label>

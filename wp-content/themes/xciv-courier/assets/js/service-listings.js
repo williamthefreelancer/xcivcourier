@@ -13,6 +13,7 @@
 		activeId: cfg.activeId || '',
 		remainMins: null,
 		timer: null,
+		hubId: '',
 	};
 
 	const i18n = cfg.i18n || {};
@@ -31,10 +32,45 @@
 
 	function hubOrigin() {
 		const hubs = cfg.hubs || [];
+		if (state.hubId) {
+			const match = hubs.find((h) => h && h.id === state.hubId);
+			if (match && match.lat != null && match.lng != null) {
+				return { lat: Number(match.lat), lng: Number(match.lng) };
+			}
+		}
 		if (hubs[0] && hubs[0].lat != null && hubs[0].lng != null) {
 			return { lat: Number(hubs[0].lat), lng: Number(hubs[0].lng) };
 		}
 		return { lat: 35.312, lng: -80.744 };
+	}
+
+	function setListingsMode(mode) {
+		state.mode = mode || 'all';
+		root.querySelectorAll('[data-xciv-listings-mode]').forEach((b) =>
+			b.classList.toggle('is-active', (b.getAttribute('data-xciv-listings-mode') || '') === state.mode)
+		);
+		applyFilters();
+	}
+
+	function syncFromHeaderFulfillment(mode) {
+		// Header pickup → queue/pickup listings; delivery → delivery listings.
+		if (mode === 'pickup') {
+			setListingsMode('queue');
+			if (state.filter === 'all') {
+				state.filter = 'near';
+				root.querySelectorAll('[data-xciv-listings-filter]').forEach((b) =>
+					b.classList.toggle(
+						'is-active',
+						(b.getAttribute('data-xciv-listings-filter') || '') === 'near'
+					)
+				);
+			}
+			applyFilters();
+			return;
+		}
+		if (mode === 'delivery') {
+			setListingsMode('delivery');
+		}
 	}
 
 	function formatEta(mins) {
@@ -213,13 +249,37 @@
 	/* Filters */
 	root.querySelectorAll('[data-xciv-listings-mode]').forEach((btn) => {
 		btn.addEventListener('click', () => {
-			state.mode = btn.getAttribute('data-xciv-listings-mode') || 'all';
-			root.querySelectorAll('[data-xciv-listings-mode]').forEach((b) =>
-				b.classList.toggle('is-active', b === btn)
-			);
-			applyFilters();
+			setListingsMode(btn.getAttribute('data-xciv-listings-mode') || 'all');
 		});
 	});
+
+	window.addEventListener('xciv:fulfillment', (event) => {
+		const mode = event.detail && event.detail.mode;
+		if (mode) syncFromHeaderFulfillment(mode);
+	});
+
+	window.addEventListener('xciv:hub', (event) => {
+		const hubId = event.detail && event.detail.hubId;
+		if (!hubId) return;
+		state.hubId = hubId;
+		if (state.activeId) {
+			startTracking(state.activeId);
+		} else {
+			dispatchTrack(null, 0, null);
+		}
+	});
+
+	// Apply current header state if already set.
+	try {
+		const ff = document.documentElement.getAttribute('data-xciv-fulfillment');
+		if (ff === 'pickup' || ff === 'delivery') {
+			syncFromHeaderFulfillment(ff);
+		}
+		const hubAttr = document.documentElement.getAttribute('data-xciv-hub');
+		if (hubAttr) state.hubId = hubAttr;
+	} catch (e) {
+		/* ignore */
+	}
 
 	root.querySelectorAll('[data-xciv-cat]').forEach((btn) => {
 		btn.addEventListener('click', () => {

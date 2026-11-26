@@ -57,28 +57,35 @@ function xciv_core_default_settings(): array {
 			'show_venues'  => true,
 			'show_radius'  => true,
 		),
-		'hubs'       => array(
+		'hubs'         => array(
 			array(
-				'id'   => 'ucity',
-				'label'=> 'University City',
-				'zip'  => '28262',
-				'lat'  => 35.3186178,
-				'lng'  => -80.6997960,
+				'id'              => 'ucity',
+				'label'           => 'University City',
+				'zip'             => '28262',
+				'lat'             => 35.3186178,
+				'lng'             => -80.6997960,
+				'pickup_enabled'  => true,
 			),
 			array(
-				'id'   => 'eastland',
-				'label'=> 'Eastland / 28213',
-				'zip'  => '28213',
-				'lat'  => 35.268,
-				'lng'  => -80.766,
+				'id'              => 'eastland',
+				'label'           => 'Eastland / 28213',
+				'zip'             => '28213',
+				'lat'             => 35.268,
+				'lng'             => -80.766,
+				'pickup_enabled'  => true,
 			),
 			array(
-				'id'   => 'concord',
-				'label'=> 'Concord',
-				'zip'  => '28027',
-				'lat'  => 35.409,
-				'lng'  => -80.58,
+				'id'              => 'concord',
+				'label'           => 'Concord',
+				'zip'             => '28027',
+				'lat'             => 35.409,
+				'lng'             => -80.58,
+				'pickup_enabled'  => true,
 			),
+		),
+		'fulfillment'  => array(
+			'default_mode' => 'delivery', // delivery | pickup
+			'default_hub'  => 'ucity',
 		),
 	);
 }
@@ -107,6 +114,12 @@ function xciv_core_settings(): array {
 		$settings['map'] = wp_parse_args( $settings['map'], xciv_core_default_settings()['map'] );
 	}
 
+	if ( ! isset( $settings['fulfillment'] ) || ! is_array( $settings['fulfillment'] ) ) {
+		$settings['fulfillment'] = xciv_core_default_settings()['fulfillment'];
+	} else {
+		$settings['fulfillment'] = wp_parse_args( $settings['fulfillment'], xciv_core_default_settings()['fulfillment'] );
+	}
+
 	if ( defined( 'XCIV_MAPBOX_TOKEN' ) && XCIV_MAPBOX_TOKEN ) {
 		$settings['map']['mapbox_token'] = (string) XCIV_MAPBOX_TOKEN;
 	}
@@ -132,7 +145,7 @@ function xciv_core_settings(): array {
  * Public hub pins — ZIP / area labels only. Never includes the private street address.
  *
  * @param array<string, mixed>|null $settings Optional settings snapshot.
- * @return array<int, array{id:string,label:string,zip:string,lat:float,lng:float}>
+ * @return array<int, array{id:string,label:string,zip:string,lat:float,lng:float,pickup_enabled:bool}>
  */
 function xciv_core_public_hubs( ?array $settings = null ): array {
 	if ( $settings === null ) {
@@ -163,23 +176,26 @@ function xciv_core_public_hubs( ?array $settings = null ): array {
 			continue;
 		}
 		$id = (string) ( $hub['id'] ?? '' );
+		$pickup_enabled = ! isset( $hub['pickup_enabled'] ) || ! empty( $hub['pickup_enabled'] );
 		if ( $id === 'ucity' ) {
 			$saw_primary = true;
 			$out[]       = array(
-				'id'    => 'ucity',
-				'label' => $label,
-				'zip'   => $zip,
-				'lat'   => $base_lat,
-				'lng'   => $base_lng,
+				'id'             => 'ucity',
+				'label'          => $label,
+				'zip'            => $zip,
+				'lat'            => $base_lat,
+				'lng'            => $base_lng,
+				'pickup_enabled' => $pickup_enabled,
 			);
 			continue;
 		}
 		$out[] = array(
-			'id'    => $id,
-			'label' => (string) ( $hub['label'] ?? $id ),
-			'zip'   => (string) ( $hub['zip'] ?? '' ),
-			'lat'   => (float) ( $hub['lat'] ?? 0 ),
-			'lng'   => (float) ( $hub['lng'] ?? 0 ),
+			'id'             => $id,
+			'label'          => (string) ( $hub['label'] ?? $id ),
+			'zip'            => (string) ( $hub['zip'] ?? '' ),
+			'lat'            => (float) ( $hub['lat'] ?? 0 ),
+			'lng'            => (float) ( $hub['lng'] ?? 0 ),
+			'pickup_enabled' => $pickup_enabled,
 		);
 	}
 
@@ -187,11 +203,12 @@ function xciv_core_public_hubs( ?array $settings = null ): array {
 		array_unshift(
 			$out,
 			array(
-				'id'    => 'ucity',
-				'label' => $label,
-				'zip'   => $zip,
-				'lat'   => $base_lat,
-				'lng'   => $base_lng,
+				'id'             => 'ucity',
+				'label'          => $label,
+				'zip'            => $zip,
+				'lat'            => $base_lat,
+				'lng'            => $base_lng,
+				'pickup_enabled' => true,
 			)
 		);
 	}
@@ -305,11 +322,12 @@ function xciv_core_sanitize_settings( $input ): array {
 			continue;
 		}
 		$hubs[] = array(
-			'id'    => $id,
-			'label' => sanitize_text_field( (string) ( $hub['label'] ?? $id ) ),
-			'zip'   => sanitize_text_field( (string) ( $hub['zip'] ?? '' ) ),
-			'lat'   => (float) ( $hub['lat'] ?? 0 ),
-			'lng'   => (float) ( $hub['lng'] ?? 0 ),
+			'id'             => $id,
+			'label'          => sanitize_text_field( (string) ( $hub['label'] ?? $id ) ),
+			'zip'            => sanitize_text_field( (string) ( $hub['zip'] ?? '' ) ),
+			'lat'            => (float) ( $hub['lat'] ?? 0 ),
+			'lng'            => (float) ( $hub['lng'] ?? 0 ),
+			'pickup_enabled' => ! empty( $hub['pickup_enabled'] ),
 		);
 	}
 	$out['hubs'] = $hubs !== array() ? $hubs : $defaults['hubs'];
@@ -325,6 +343,21 @@ function xciv_core_sanitize_settings( $input ): array {
 	}
 	$out['map']['center_lat'] = $out['lead_rider']['base_lat'];
 	$out['map']['center_lng'] = $out['lead_rider']['base_lng'];
+
+	$ff = isset( $input['fulfillment'] ) && is_array( $input['fulfillment'] ) ? $input['fulfillment'] : array();
+	$ff_mode = sanitize_key( (string) ( $ff['default_mode'] ?? $defaults['fulfillment']['default_mode'] ) );
+	if ( ! in_array( $ff_mode, array( 'delivery', 'pickup' ), true ) ) {
+		$ff_mode = 'delivery';
+	}
+	$ff_hub = sanitize_key( (string) ( $ff['default_hub'] ?? $defaults['fulfillment']['default_hub'] ) );
+	$hub_ids = array_column( $out['hubs'], 'id' );
+	if ( $ff_hub === '' || ( $hub_ids && ! in_array( $ff_hub, $hub_ids, true ) ) ) {
+		$ff_hub = (string) ( $hub_ids[0] ?? 'ucity' );
+	}
+	$out['fulfillment'] = array(
+		'default_mode' => $ff_mode,
+		'default_hub'  => $ff_hub,
+	);
 
 	return $out;
 }
