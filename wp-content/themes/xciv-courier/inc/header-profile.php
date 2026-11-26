@@ -315,7 +315,7 @@ function xciv_header_brand_assets(): array {
 /**
  * Sister products for the Uber-style product switcher.
  *
- * @return array<int, array{id:string,label:string,short:string,url:string,current:bool,external:bool}>
+ * @return array<int, array{id:string,label:string,short:string,glyph:string,blurb:string,url:string,current:bool,external:bool}>
  */
 function xciv_product_switcher_items(): array {
 	$assets = xciv_header_brand_assets();
@@ -325,6 +325,8 @@ function xciv_product_switcher_items(): array {
 			'id'       => 'courier',
 			'label'    => __( 'XCIV Courier', 'xciv-courier' ),
 			'short'    => __( 'Courier', 'xciv-courier' ),
+			'glyph'    => 'C',
+			'blurb'    => __( 'On-demand delivery & pickup', 'xciv-courier' ),
 			'url'      => $assets['home'],
 			'current'  => true,
 			'external' => false,
@@ -333,6 +335,8 @@ function xciv_product_switcher_items(): array {
 			'id'       => 'superninetyfour',
 			'label'    => __( 'Super Ninety Four', 'xciv-courier' ),
 			'short'    => __( 'SN4', 'xciv-courier' ),
+			'glyph'    => '94',
+			'blurb'    => __( 'Culture, drops & merch', 'xciv-courier' ),
 			'url'      => 'https://superninetyfour.com/',
 			'current'  => false,
 			'external' => true,
@@ -341,6 +345,8 @@ function xciv_product_switcher_items(): array {
 			'id'       => 'xcivsocial',
 			'label'    => __( 'XCIV Social', 'xciv-courier' ),
 			'short'    => __( 'Social', 'xciv-courier' ),
+			'glyph'    => 'S',
+			'blurb'    => __( 'Connect with the community', 'xciv-courier' ),
 			'url'      => 'https://xcivsocial.com/',
 			'current'  => false,
 			'external' => true,
@@ -350,7 +356,7 @@ function xciv_product_switcher_items(): array {
 	/**
 	 * Filter product switcher destinations.
 	 *
-	 * @param array<int, array{id:string,label:string,short:string,url:string,current:bool,external:bool}> $items Products.
+	 * @param array<int, array{id:string,label:string,short:string,glyph:string,blurb:string,url:string,current:bool,external:bool}> $items Products.
 	 */
 	return apply_filters( 'xciv_product_switcher_items', $items );
 }
@@ -359,20 +365,30 @@ function xciv_product_switcher_items(): array {
  * Header logo + product switcher (Courier / Super Ninety Four / XCIV Social).
  */
 function xciv_header_brand_render(): string {
-	$assets = xciv_header_brand_assets();
-	$items  = xciv_product_switcher_items();
+	$assets  = xciv_header_brand_assets();
+	$items   = xciv_product_switcher_items();
 	$current = array(
 		'id'    => 'courier',
 		'short' => __( 'Courier', 'xciv-courier' ),
+		'glyph' => 'C',
+		'label' => __( 'XCIV Courier', 'xciv-courier' ),
 	);
 
 	foreach ( $items as $item ) {
 		if ( ! empty( $item['current'] ) ) {
 			$current['id']    = (string) $item['id'];
 			$current['short'] = (string) ( $item['short'] ?? $item['label'] );
+			$current['glyph'] = (string) ( $item['glyph'] ?? ( function_exists( 'mb_substr' ) ? mb_substr( $current['short'], 0, 1 ) : substr( $current['short'], 0, 1 ) ) );
+			$current['label'] = (string) $item['label'];
 			break;
 		}
 	}
+
+	$switch_label = sprintf(
+		/* translators: %s: current product short name */
+		__( 'Switch product, current: %s', 'xciv-courier' ),
+		$current['short']
+	);
 
 	ob_start();
 	?>
@@ -396,7 +412,9 @@ function xciv_header_brand_render(): string {
 				aria-expanded="false"
 				aria-haspopup="menu"
 				aria-controls="xciv-product-switcher-menu"
+				aria-label="<?php echo esc_attr( $switch_label ); ?>"
 			>
+				<span class="xciv-product-switcher__glyph" aria-hidden="true"><?php echo esc_html( $current['glyph'] ); ?></span>
 				<span class="xciv-product-switcher__current"><?php echo esc_html( $current['short'] ); ?></span>
 				<svg class="xciv-product-switcher__chevron" width="12" height="12" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
 					<path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -418,6 +436,8 @@ function xciv_header_brand_render(): string {
 					if ( $is_current ) {
 						$classes .= ' is-current';
 					}
+					$glyph = (string) ( $item['glyph'] ?? '' );
+					$blurb = (string) ( $item['blurb'] ?? '' );
 					?>
 					<a
 						class="<?php echo esc_attr( $classes ); ?>"
@@ -427,11 +447,19 @@ function xciv_header_brand_render(): string {
 						<?php echo ! empty( $item['external'] ) ? 'rel="noopener noreferrer"' : ''; ?>
 						data-xciv-product="<?php echo esc_attr( (string) $item['id'] ); ?>"
 					>
-						<span class="xciv-product-switcher__item-label"><?php echo esc_html( (string) $item['label'] ); ?></span>
+						<span class="xciv-product-switcher__item-glyph" aria-hidden="true"><?php echo esc_html( $glyph ); ?></span>
+						<span class="xciv-product-switcher__item-text">
+							<span class="xciv-product-switcher__item-label"><?php echo esc_html( (string) $item['label'] ); ?></span>
+							<?php if ( $blurb !== '' ) : ?>
+								<span class="xciv-product-switcher__item-blurb"><?php echo esc_html( $blurb ); ?></span>
+							<?php endif; ?>
+						</span>
 						<?php if ( $is_current ) : ?>
 							<svg class="xciv-product-switcher__check" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
 								<path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
 							</svg>
+						<?php else : ?>
+							<span class="xciv-product-switcher__check-spacer" aria-hidden="true"></span>
 						<?php endif; ?>
 					</a>
 				<?php endforeach; ?>

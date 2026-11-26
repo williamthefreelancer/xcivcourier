@@ -13,10 +13,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'XCIV_COURIER_VERSION', '0.9.9' );
+define( 'XCIV_COURIER_VERSION', '0.9.11' );
 define( 'XCIV_COURIER_DIR', get_template_directory() );
 define( 'XCIV_COURIER_URI', get_template_directory_uri() );
 
+require_once XCIV_COURIER_DIR . '/inc/scheduling.php';
+require_once XCIV_COURIER_DIR . '/inc/memberships.php';
+require_once XCIV_COURIER_DIR . '/inc/stripe.php';
 require_once XCIV_COURIER_DIR . '/inc/booking-woocommerce.php';
 require_once XCIV_COURIER_DIR . '/inc/booking-sms.php';
 require_once XCIV_COURIER_DIR . '/inc/booking-dashboard.php';

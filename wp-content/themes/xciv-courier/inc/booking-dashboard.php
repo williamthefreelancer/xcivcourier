@@ -313,6 +313,37 @@ function xciv_booking_dashboard_assets(): void {
 		XCIV_COURIER_VERSION,
 		true
 	);
+
+	wp_enqueue_script(
+		'xciv-courier-membership-checkout',
+		XCIV_COURIER_URI . '/assets/js/membership-checkout.js',
+		array(),
+		XCIV_COURIER_VERSION,
+		true
+	);
+
+	$account = function_exists( 'wc_get_page_permalink' ) ? (string) wc_get_page_permalink( 'myaccount' ) : home_url( '/' );
+	wp_localize_script(
+		'xciv-courier-membership-checkout',
+		'xcivMembership',
+		array(
+			'loggedIn'     => is_user_logged_in(),
+			'ajaxUrl'      => admin_url( 'admin-ajax.php' ),
+			'ajaxNonce'    => wp_create_nonce( 'xciv_membership' ),
+			'restCheckout' => esc_url_raw( rest_url( 'xciv/v1/stripe/checkout' ) ),
+			'restNonce'    => wp_create_nonce( 'wp_rest' ),
+			'checkoutUrl'  => function_exists( 'wc_get_checkout_url' ) ? wc_get_checkout_url() : home_url( '/checkout/' ),
+			'loginUrl'     => wp_login_url( $account ),
+			'i18n'         => array(
+				'startingStripe' => __( 'Starting Stripe Checkout…', 'xciv-courier' ),
+				'startingWoo'    => __( 'Adding membership to cart…', 'xciv-courier' ),
+				'stripeMissing'  => __( 'Stripe checkout is not available yet.', 'xciv-courier' ),
+				'stripeError'    => __( 'Could not start Stripe Checkout.', 'xciv-courier' ),
+				'wooError'       => __( 'Could not start checkout.', 'xciv-courier' ),
+				'badPlan'        => __( 'Pick a membership plan.', 'xciv-courier' ),
+			),
+		)
+	);
 }
 add_action( 'wp_enqueue_scripts', 'xciv_booking_dashboard_assets' );
 
@@ -1652,6 +1683,12 @@ function xciv_booking_render_dashboard(): void {
 			<button type="button" class="xciv-feed__chip" data-xciv-filter="sms"><?php esc_html_e( 'Live SMS', 'xciv-courier' ); ?></button>
 			<button type="button" class="xciv-feed__chip" data-xciv-filter="completed"><?php esc_html_e( 'Completed', 'xciv-courier' ); ?></button>
 		</div>
+
+		<?php if ( function_exists( 'xciv_render_membership_upsells' ) ) : ?>
+			<div class="xciv-feed__upsells" data-xciv-section="membership">
+				<?php xciv_render_membership_upsells( array( 'context' => 'dashboard', 'show_intro' => true ) ); ?>
+			</div>
+		<?php endif; ?>
 
 		<?php
 		xciv_booking_render_venue_section(
