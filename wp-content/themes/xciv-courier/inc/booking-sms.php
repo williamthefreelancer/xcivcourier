@@ -305,8 +305,11 @@ function xciv_sms_customer_message( int $order_id, array $meta ): string {
 
 /**
  * Send booking SMS alerts once per order.
+ *
+ * @param mixed $order_id Order ID.
  */
-function xciv_sms_notify_order( int $order_id ): void {
+function xciv_sms_notify_order( $order_id ): void {
+	$order_id = absint( $order_id );
 	if ( $order_id <= 0 || ! function_exists( 'wc_get_order' ) ) {
 		return;
 	}

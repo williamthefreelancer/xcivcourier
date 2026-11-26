@@ -324,27 +324,38 @@
 		}
 	}
 
-	function initProfileMenu() {
-		var roots = Array.prototype.slice.call(document.querySelectorAll('[data-xciv-header-profile]'));
+	function initHeaderMenus() {
+		var roots = Array.prototype.slice.call(
+			document.querySelectorAll('[data-xciv-header-profile], [data-xciv-product-switcher]')
+		);
 		if (!roots.length) {
 			return;
 		}
 
+		function parts(root) {
+			return {
+				trigger: root.querySelector(
+					'[data-xciv-header-profile-trigger], [data-xciv-product-switcher-trigger]'
+				),
+				menu: root.querySelector(
+					'[data-xciv-header-profile-menu], [data-xciv-product-switcher-menu]'
+				),
+			};
+		}
+
 		function closeMenu(root) {
-			var trigger = root.querySelector('[data-xciv-header-profile-trigger]');
-			var menu = root.querySelector('[data-xciv-header-profile-menu]');
-			if (!trigger || !menu) {
+			var els = parts(root);
+			if (!els.trigger || !els.menu) {
 				return;
 			}
 			root.classList.remove('is-open');
-			trigger.setAttribute('aria-expanded', 'false');
-			menu.hidden = true;
+			els.trigger.setAttribute('aria-expanded', 'false');
+			els.menu.hidden = true;
 		}
 
 		function openMenu(root) {
-			var trigger = root.querySelector('[data-xciv-header-profile-trigger]');
-			var menu = root.querySelector('[data-xciv-header-profile-menu]');
-			if (!trigger || !menu) {
+			var els = parts(root);
+			if (!els.trigger || !els.menu) {
 				return;
 			}
 			roots.forEach(function (other) {
@@ -353,17 +364,17 @@
 				}
 			});
 			root.classList.add('is-open');
-			trigger.setAttribute('aria-expanded', 'true');
-			menu.hidden = false;
+			els.trigger.setAttribute('aria-expanded', 'true');
+			els.menu.hidden = false;
 		}
 
 		roots.forEach(function (root) {
-			var trigger = root.querySelector('[data-xciv-header-profile-trigger]');
-			if (!trigger) {
+			var els = parts(root);
+			if (!els.trigger) {
 				return;
 			}
 
-			trigger.addEventListener('click', function (event) {
+			els.trigger.addEventListener('click', function (event) {
 				event.preventDefault();
 				event.stopPropagation();
 				if (root.classList.contains('is-open')) {
@@ -393,5 +404,5 @@
 	initFulfillmentTabs();
 	initRiderModes();
 	initHubModes();
-	initProfileMenu();
+	initHeaderMenus();
 })();

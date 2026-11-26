@@ -579,11 +579,13 @@ add_action( 'woocommerce_before_calculate_totals', 'xciv_booking_apply_dynamic_p
 /**
  * Show booking meta on cart / checkout / order.
  *
- * @param array<string, mixed> $item_data Existing item data.
- * @param array<string, mixed> $cart_item Cart item.
+ * @param mixed $item_data Existing item data.
+ * @param mixed $cart_item Cart item.
  * @return array<string, mixed>
  */
-function xciv_booking_cart_item_data( array $item_data, array $cart_item ): array {
+function xciv_booking_cart_item_data( $item_data, $cart_item = array() ): array {
+	$item_data = is_array( $item_data ) ? $item_data : array();
+	$cart_item = is_array( $cart_item ) ? $cart_item : array();
 	if ( empty( $cart_item['xciv_booking'] ) || ! is_array( $cart_item['xciv_booking'] ) ) {
 		return $item_data;
 	}
@@ -602,11 +604,16 @@ add_filter( 'woocommerce_get_item_data', 'xciv_booking_cart_item_data', 10, 2 );
 /**
  * Persist booking meta onto the order line item.
  *
- * @param WC_Order_Item_Product $item          Order item.
- * @param string                $cart_item_key Cart key.
- * @param array<string, mixed>  $values        Cart values.
+ * @param mixed $item          Order item.
+ * @param mixed $cart_item_key Cart key.
+ * @param mixed $values        Cart values.
  */
-function xciv_booking_checkout_create_order_line_item( $item, string $cart_item_key, array $values ): void {
+function xciv_booking_checkout_create_order_line_item( $item, $cart_item_key = '', $values = array() ): void {
+	unset( $cart_item_key );
+	$values = is_array( $values ) ? $values : array();
+	if ( ! is_object( $item ) || ! method_exists( $item, 'add_meta_data' ) ) {
+		return;
+	}
 	if ( ! empty( $values['xciv_booking'] ) && is_array( $values['xciv_booking'] ) ) {
 		foreach ( $values['xciv_booking'] as $label => $value ) {
 			$item->add_meta_data( (string) $label, (string) $value, true );
@@ -942,10 +949,11 @@ add_action( 'wp_ajax_nopriv_xciv_booking_update_checkout_details', 'xciv_booking
 /**
  * Prefer phone required on billing for booking checkouts (classic + locale).
  *
- * @param array<string, mixed> $fields Billing fields.
+ * @param mixed $fields Billing fields.
  * @return array<string, mixed>
  */
-function xciv_booking_require_billing_phone( array $fields ): array {
+function xciv_booking_require_billing_phone( $fields ): array {
+	$fields = is_array( $fields ) ? $fields : array();
 	if ( isset( $fields['billing_phone'] ) ) {
 		$fields['billing_phone']['required'] = true;
 	}
@@ -956,10 +964,11 @@ add_filter( 'woocommerce_billing_fields', 'xciv_booking_require_billing_phone', 
 /**
  * Mark phone required in country locale data (helps Blocks address forms).
  *
- * @param array<string, mixed> $locale Locale fields.
+ * @param mixed $locale Locale fields.
  * @return array<string, mixed>
  */
-function xciv_booking_require_phone_locale( array $locale ): array {
+function xciv_booking_require_phone_locale( $locale ): array {
+	$locale = is_array( $locale ) ? $locale : array();
 	foreach ( $locale as $country => $fields ) {
 		if ( ! is_array( $fields ) ) {
 			continue;

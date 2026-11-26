@@ -313,23 +313,131 @@ function xciv_header_brand_assets(): array {
 }
 
 /**
- * Header logo (site icon mark removed — favicon still uses site-icon.jpg).
+ * Sister products for the Uber-style product switcher.
+ *
+ * @return array<int, array{id:string,label:string,short:string,url:string,current:bool,external:bool}>
+ */
+function xciv_product_switcher_items(): array {
+	$assets = xciv_header_brand_assets();
+
+	$items = array(
+		array(
+			'id'       => 'courier',
+			'label'    => __( 'XCIV Courier', 'xciv-courier' ),
+			'short'    => __( 'Courier', 'xciv-courier' ),
+			'url'      => $assets['home'],
+			'current'  => true,
+			'external' => false,
+		),
+		array(
+			'id'       => 'superninetyfour',
+			'label'    => __( 'Super Ninety Four', 'xciv-courier' ),
+			'short'    => __( 'SN4', 'xciv-courier' ),
+			'url'      => 'https://superninetyfour.com/',
+			'current'  => false,
+			'external' => true,
+		),
+		array(
+			'id'       => 'xcivsocial',
+			'label'    => __( 'XCIV Social', 'xciv-courier' ),
+			'short'    => __( 'Social', 'xciv-courier' ),
+			'url'      => 'https://xcivsocial.com/',
+			'current'  => false,
+			'external' => true,
+		),
+	);
+
+	/**
+	 * Filter product switcher destinations.
+	 *
+	 * @param array<int, array{id:string,label:string,short:string,url:string,current:bool,external:bool}> $items Products.
+	 */
+	return apply_filters( 'xciv_product_switcher_items', $items );
+}
+
+/**
+ * Header logo + product switcher (Courier / Super Ninety Four / XCIV Social).
  */
 function xciv_header_brand_render(): string {
 	$assets = xciv_header_brand_assets();
+	$items  = xciv_product_switcher_items();
+	$current = array(
+		'id'    => 'courier',
+		'short' => __( 'Courier', 'xciv-courier' ),
+	);
+
+	foreach ( $items as $item ) {
+		if ( ! empty( $item['current'] ) ) {
+			$current['id']    = (string) $item['id'];
+			$current['short'] = (string) ( $item['short'] ?? $item['label'] );
+			break;
+		}
+	}
 
 	ob_start();
 	?>
-	<a class="xciv-header-brand" href="<?php echo esc_url( $assets['home'] ); ?>" aria-label="<?php esc_attr_e( 'XCIV Courier home', 'xciv-courier' ); ?>">
-		<img
-			class="xciv-header-brand__logo"
-			src="<?php echo esc_url( $assets['logo'] ); ?>"
-			width="120"
-			height="131"
-			alt="<?php esc_attr_e( 'SUPR XCIV Platform Holdings', 'xciv-courier' ); ?>"
-			decoding="async"
-		>
-	</a>
+	<div class="xciv-header-brand-wrap">
+		<a class="xciv-header-brand" href="<?php echo esc_url( $assets['home'] ); ?>" aria-label="<?php esc_attr_e( 'XCIV Courier home', 'xciv-courier' ); ?>">
+			<img
+				class="xciv-header-brand__logo"
+				src="<?php echo esc_url( $assets['logo'] ); ?>"
+				width="120"
+				height="131"
+				alt="<?php esc_attr_e( 'SUPR XCIV Platform Holdings', 'xciv-courier' ); ?>"
+				decoding="async"
+			>
+		</a>
+
+		<div class="xciv-product-switcher" data-xciv-product-switcher>
+			<button
+				type="button"
+				class="xciv-product-switcher__trigger"
+				data-xciv-product-switcher-trigger
+				aria-expanded="false"
+				aria-haspopup="menu"
+				aria-controls="xciv-product-switcher-menu"
+			>
+				<span class="xciv-product-switcher__current"><?php echo esc_html( $current['short'] ); ?></span>
+				<svg class="xciv-product-switcher__chevron" width="12" height="12" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+					<path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+				</svg>
+			</button>
+
+			<div
+				id="xciv-product-switcher-menu"
+				class="xciv-product-switcher__menu"
+				data-xciv-product-switcher-menu
+				role="menu"
+				aria-label="<?php esc_attr_e( 'Switch product', 'xciv-courier' ); ?>"
+				hidden
+			>
+				<?php foreach ( $items as $item ) : ?>
+					<?php
+					$is_current = ! empty( $item['current'] );
+					$classes    = 'xciv-product-switcher__item';
+					if ( $is_current ) {
+						$classes .= ' is-current';
+					}
+					?>
+					<a
+						class="<?php echo esc_attr( $classes ); ?>"
+						role="menuitem"
+						href="<?php echo esc_url( (string) $item['url'] ); ?>"
+						<?php echo $is_current ? 'aria-current="page"' : ''; ?>
+						<?php echo ! empty( $item['external'] ) ? 'rel="noopener noreferrer"' : ''; ?>
+						data-xciv-product="<?php echo esc_attr( (string) $item['id'] ); ?>"
+					>
+						<span class="xciv-product-switcher__item-label"><?php echo esc_html( (string) $item['label'] ); ?></span>
+						<?php if ( $is_current ) : ?>
+							<svg class="xciv-product-switcher__check" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+								<path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+							</svg>
+						<?php endif; ?>
+					</a>
+				<?php endforeach; ?>
+			</div>
+		</div>
+	</div>
 	<?php
 
 	return (string) ob_get_clean();
@@ -339,15 +447,15 @@ add_shortcode( 'xciv_header_brand', 'xciv_header_brand_render' );
 /**
  * Prefer theme site icon over Customizer / empty default.
  *
- * @param string          $url     Current icon URL.
- * @param int             $size    Requested size.
- * @param int|string|null $blog_id Blog id (unused).
+ * @param mixed $url     Current icon URL.
+ * @param mixed $size    Requested size.
+ * @param mixed $blog_id Blog id (unused).
  */
-function xciv_courier_site_icon_url( string $url, int $size = 512, $blog_id = 0 ): string { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter
-	unset( $blog_id );
+function xciv_courier_site_icon_url( $url, $size = 512, $blog_id = 0 ): string { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter
+	unset( $size, $blog_id );
 	$path = XCIV_COURIER_DIR . '/assets/img/site-icon.jpg';
 	if ( ! is_readable( $path ) ) {
-		return $url;
+		return is_string( $url ) ? $url : '';
 	}
 	return XCIV_COURIER_URI . '/assets/img/site-icon.jpg';
 }

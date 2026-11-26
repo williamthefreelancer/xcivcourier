@@ -53,10 +53,11 @@ add_action( 'wp_enqueue_scripts', 'xciv_shop_catalog_assets' );
 /**
  * Mark shop for the shared feed shell.
  *
- * @param array<int, string> $classes Body classes.
+ * @param mixed $classes Body classes.
  * @return array<int, string>
  */
-function xciv_shop_body_class( array $classes ): array {
+function xciv_shop_body_class( $classes ): array {
+	$classes = is_array( $classes ) ? $classes : array();
 	if ( xciv_shop_is_catalog() ) {
 		$classes[] = 'xciv-shop-catalog';
 		$classes[] = 'xciv-account-feed';
@@ -340,10 +341,13 @@ function xciv_shop_render_catalog(): void {
 /**
  * Replace the empty Woo product collection with the XCIV shop catalog.
  *
- * @param string               $block_content Block HTML.
- * @param array<string, mixed> $block         Parsed block.
+ * @param mixed $block_content Block HTML.
+ * @param mixed $block         Parsed block.
  */
-function xciv_shop_replace_product_collection( string $block_content, array $block ): string {
+function xciv_shop_replace_product_collection( $block_content, $block = array() ): string {
+	$block_content = is_string( $block_content ) ? $block_content : '';
+	unset( $block );
+
 	if ( ! xciv_shop_is_catalog() ) {
 		return $block_content;
 	}
@@ -357,9 +361,10 @@ add_filter( 'render_block_woocommerce/product-collection', 'xciv_shop_replace_pr
 /**
  * Soften the default shop title copy for the catalog feed.
  *
- * @param string $title Query title.
+ * @param mixed $title Query title.
  */
-function xciv_shop_query_title( string $title ): string {
+function xciv_shop_query_title( $title ): string {
+	$title = is_string( $title ) ? $title : '';
 	if ( xciv_shop_is_catalog() ) {
 		return __( 'Shop', 'xciv-courier' );
 	}

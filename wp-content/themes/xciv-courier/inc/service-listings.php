@@ -268,10 +268,11 @@ add_action( 'wp_enqueue_scripts', 'xciv_listings_enqueue_assets', 30 );
 /**
  * Body classes for listings template.
  *
- * @param array<int, string> $classes Body classes.
+ * @param mixed $classes Body classes.
  * @return array<int, string>
  */
-function xciv_listings_body_class( array $classes ): array {
+function xciv_listings_body_class( $classes ): array {
+	$classes = is_array( $classes ) ? $classes : array();
 	if ( xciv_listings_is_template() || has_shortcode( (string) get_post_field( 'post_content', get_queried_object_id() ), 'xciv_service_listings' ) ) {
 		$classes[] = 'xciv-service-listings';
 		$classes[] = 'xciv-account-feed';

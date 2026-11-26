@@ -153,9 +153,14 @@ function xciv_booking_set_status( WC_Order $order, string $status ): void {
 /**
  * Seed confirmed status when a booking order is paid / processing.
  *
- * @param int $order_id Order ID.
+ * @param mixed $order_id Order ID.
  */
-function xciv_booking_seed_status_on_order( int $order_id ): void {
+function xciv_booking_seed_status_on_order( $order_id ): void {
+	$order_id = absint( $order_id );
+	if ( $order_id <= 0 || ! function_exists( 'wc_get_order' ) ) {
+		return;
+	}
+
 	$order = wc_get_order( $order_id );
 	if ( ! $order instanceof WC_Order || ! xciv_order_is_booking( $order ) ) {
 		return;
@@ -176,11 +181,12 @@ add_action( 'woocommerce_order_status_completed', 'xciv_booking_seed_status_on_o
 /**
  * Create + auto-login a customer account for guest booking checkouts.
  *
- * @param int      $order_id Order ID.
- * @param array    $data     Posted checkout data.
- * @param WC_Order $order    Order object.
+ * @param mixed $order_id Order ID.
+ * @param mixed $data     Posted checkout data.
+ * @param mixed $order    Order object.
  */
-function xciv_booking_ensure_customer_account( int $order_id, array $data, $order ): void {
+function xciv_booking_ensure_customer_account( $order_id, $data = array(), $order = null ): void {
+	unset( $order_id, $data );
 	if ( ! $order instanceof WC_Order || ! xciv_order_is_booking( $order ) ) {
 		return;
 	}
@@ -217,15 +223,16 @@ add_action( 'woocommerce_checkout_order_processed', 'xciv_booking_ensure_custome
 /**
  * Send booking customers to My Account instead of the classic thank-you page.
  *
- * @param string   $return_url Default return URL.
- * @param WC_Order $order      Order.
+ * @param mixed $return_url Default return URL.
+ * @param mixed $order      Order.
  */
-function xciv_booking_return_url( string $return_url, $order ): string {
+function xciv_booking_return_url( $return_url, $order = null ): string {
+	$return_url = is_string( $return_url ) ? $return_url : home_url( '/' );
 	if ( ! $order instanceof WC_Order || ! xciv_order_is_booking( $order ) ) {
 		return $return_url;
 	}
 
-	$account = wc_get_page_permalink( 'myaccount' );
+	$account = function_exists( 'wc_get_page_permalink' ) ? wc_get_page_permalink( 'myaccount' ) : '';
 	if ( ! $account ) {
 		return $return_url;
 	}
@@ -312,10 +319,11 @@ add_action( 'wp_enqueue_scripts', 'xciv_booking_dashboard_assets' );
 /**
  * Mark account pages for the feed shell.
  *
- * @param array<int, string> $classes Body classes.
+ * @param mixed $classes Body classes.
  * @return array<int, string>
  */
-function xciv_booking_account_body_class( array $classes ): array {
+function xciv_booking_account_body_class( $classes ): array {
+	$classes = is_array( $classes ) ? $classes : array();
 	if ( function_exists( 'is_account_page' ) && is_account_page() ) {
 		$classes[] = 'xciv-account-feed';
 	}
@@ -326,10 +334,11 @@ add_filter( 'body_class', 'xciv_booking_account_body_class' );
 /**
  * Slim account nav for a service-app feel. Guests see no account endpoints.
  *
- * @param array<string, string> $items Menu items.
+ * @param mixed $items Menu items.
  * @return array<string, string>
  */
-function xciv_booking_account_menu_items( array $items ): array {
+function xciv_booking_account_menu_items( $items ): array {
+	$items = is_array( $items ) ? $items : array();
 	if ( ! is_user_logged_in() ) {
 		return array();
 	}
@@ -1878,9 +1887,13 @@ add_action( 'woocommerce_admin_order_data_after_order_details', 'xciv_booking_ad
 /**
  * Save admin booking status.
  *
- * @param int $order_id Order ID.
+ * @param mixed $order_id Order ID.
  */
-function xciv_booking_admin_save_status( int $order_id ): void {
+function xciv_booking_admin_save_status( $order_id ): void {
+	$order_id = absint( $order_id );
+	if ( $order_id <= 0 || ! function_exists( 'wc_get_order' ) ) {
+		return;
+	}
 	if ( ! isset( $_POST['xciv_booking_status_nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( (string) $_POST['xciv_booking_status_nonce'] ) ), 'xciv_booking_status' ) ) {
 		return;
 	}

@@ -42,12 +42,12 @@ function xciv_auth_urls(): array {
 
 /**
  * Whether customer registration is allowed on the front end.
+ *
+ * Do not call get_option( 'woocommerce_enable_myaccount_registration' ) here —
+ * that option is short-circuited by xciv_auth_force_registration_option() and
+ * would recurse until PHP runs out of memory.
  */
 function xciv_auth_registration_enabled(): bool {
-	if ( function_exists( 'wc_get_page_id' ) && 'yes' === get_option( 'woocommerce_enable_myaccount_registration' ) ) {
-		return true;
-	}
-
 	/**
 	 * Allow themes/plugins to force registration on/off.
 	 *
@@ -63,10 +63,8 @@ function xciv_auth_registration_enabled(): bool {
  * @return string
  */
 function xciv_auth_force_registration_option( $value ) {
-	if ( xciv_auth_registration_enabled() ) {
-		return 'yes';
-	}
-	return is_string( $value ) ? $value : 'no';
+	unset( $value );
+	return xciv_auth_registration_enabled() ? 'yes' : 'no';
 }
 add_filter( 'pre_option_woocommerce_enable_myaccount_registration', 'xciv_auth_force_registration_option' );
 
@@ -101,50 +99,61 @@ function xciv_auth_resolve_login_redirect( string $redirect, string $requested =
 /**
  * WooCommerce login redirect.
  *
- * @param string  $redirect Redirect URL.
- * @param WP_User $user     User.
+ * Hook args are untyped — WordPress/Woo may pass null/false under edge cases.
+ *
+ * @param mixed            $redirect Redirect URL.
+ * @param mixed            $user     User.
  */
-function xciv_auth_wc_login_redirect( string $redirect, $user = null ): string {
+function xciv_auth_wc_login_redirect( $redirect, $user = null ): string {
 	unset( $user );
-	return xciv_auth_resolve_login_redirect( $redirect );
+	return xciv_auth_resolve_login_redirect( is_string( $redirect ) ? $redirect : '' );
 }
 add_filter( 'woocommerce_login_redirect', 'xciv_auth_wc_login_redirect', 20, 2 );
 
 /**
  * Core wp-login redirect.
  *
- * @param string           $redirect  Redirect URL.
- * @param string           $requested Requested redirect.
- * @param WP_User|WP_Error $user      User or error.
+ * @param mixed            $redirect  Redirect URL.
+ * @param mixed            $requested Requested redirect.
+ * @param mixed            $user      User or error.
  */
-function xciv_auth_wp_login_redirect( string $redirect, string $requested = '', $user = null ): string {
+function xciv_auth_wp_login_redirect( $redirect, $requested = '', $user = null ): string {
 	unset( $user );
-	return xciv_auth_resolve_login_redirect( $redirect, $requested );
+	return xciv_auth_resolve_login_redirect(
+		is_string( $redirect ) ? $redirect : '',
+		is_string( $requested ) ? $requested : ''
+	);
 }
 add_filter( 'login_redirect', 'xciv_auth_wp_login_redirect', 20, 3 );
 
 /**
  * After logout, return to the site home (not wp-login).
  *
- * @param string $redirect Redirect URL.
+ * @param mixed $redirect Redirect URL.
  * @return string
  */
-function xciv_auth_logout_redirect( string $redirect ): string {
-	$urls = xciv_auth_urls();
-	return $urls['home'] !== '' ? $urls['home'] : $redirect;
+function xciv_auth_logout_redirect( $redirect ): string {
+	$urls     = xciv_auth_urls();
+	$fallback = is_string( $redirect ) ? $redirect : home_url( '/' );
+	return $urls['home'] !== '' ? $urls['home'] : $fallback;
 }
 add_filter( 'woocommerce_logout_default_redirect_url', 'xciv_auth_logout_redirect' );
-add_filter( 'logout_redirect', static function ( string $redirect ): string {
-	return xciv_auth_logout_redirect( $redirect );
-}, 20 );
+add_filter(
+	'logout_redirect',
+	static function ( $redirect ) {
+		return xciv_auth_logout_redirect( $redirect );
+	},
+	20
+);
 
 /**
  * Prefer email login UX copy for WooCommerce.
  *
- * @param string $label Field label.
+ * @param mixed $label Field label.
  * @return string
  */
-function xciv_auth_username_label( string $label ): string {
+function xciv_auth_username_label( $label ): string {
+	unset( $label );
 	return __( 'Email or username', 'xciv-courier' );
 }
 add_filter( 'woocommerce_login_form_username_label', 'xciv_auth_username_label' );
@@ -152,10 +161,11 @@ add_filter( 'woocommerce_login_form_username_label', 'xciv_auth_username_label' 
 /**
  * Body class for the auth screen.
  *
- * @param array<int, string> $classes Body classes.
+ * @param mixed $classes Body classes.
  * @return array<int, string>
  */
-function xciv_auth_body_class( array $classes ): array {
+function xciv_auth_body_class( $classes ): array {
+	$classes = is_array( $classes ) ? $classes : array();
 	if ( function_exists( 'is_account_page' ) && is_account_page() && ! is_user_logged_in() ) {
 		$classes[] = 'xciv-auth-screen';
 	}
@@ -191,10 +201,11 @@ add_action( 'admin_init', 'xciv_auth_block_admin_for_customers' );
 /**
  * Hide admin bar for app customers.
  *
- * @param bool $show Whether to show the bar.
+ * @param mixed $show Whether to show the bar.
  * @return bool
  */
-function xciv_auth_hide_admin_bar( bool $show ): bool {
+function xciv_auth_hide_admin_bar( $show ): bool {
+	$show = (bool) $show;
 	if ( ! is_user_logged_in() ) {
 		return $show;
 	}

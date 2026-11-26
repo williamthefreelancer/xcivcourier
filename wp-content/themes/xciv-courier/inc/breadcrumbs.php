@@ -284,10 +284,13 @@ function xciv_breadcrumbs_render(): string {
 /**
  * Append breadcrumbs after the site header template part.
  *
- * @param string               $block_content Block HTML.
- * @param array<string, mixed> $block         Parsed block.
+ * @param mixed $block_content Block HTML.
+ * @param mixed $block         Parsed block.
  */
-function xciv_breadcrumbs_after_header( string $block_content, array $block ): string {
+function xciv_breadcrumbs_after_header( $block_content, $block = array() ): string {
+	$block_content = is_string( $block_content ) ? $block_content : '';
+	$block         = is_array( $block ) ? $block : array();
+
 	if ( ( $block['blockName'] ?? '' ) !== 'core/template-part' ) {
 		return $block_content;
 	}
@@ -308,11 +311,13 @@ add_filter( 'render_block', 'xciv_breadcrumbs_after_header', 20, 2 );
 /**
  * Hide WooCommerce / block breadcrumbs so we only show one trail.
  *
- * @param string               $block_content Block HTML.
- * @param array<string, mixed> $block         Parsed block.
+ * @param mixed $block_content Block HTML.
+ * @param mixed $block         Parsed block.
  */
-function xciv_breadcrumbs_suppress_woo_blocks( string $block_content, array $block ): string {
-	$name = (string) ( $block['blockName'] ?? '' );
+function xciv_breadcrumbs_suppress_woo_blocks( $block_content, $block = array() ): string {
+	$block_content = is_string( $block_content ) ? $block_content : '';
+	$block         = is_array( $block ) ? $block : array();
+	$name          = (string) ( $block['blockName'] ?? '' );
 	if ( $name === 'woocommerce/breadcrumbs' ) {
 		return '';
 	}
