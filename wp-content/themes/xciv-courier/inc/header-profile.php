@@ -362,6 +362,16 @@ function xciv_product_switcher_items(): array {
 			'current'  => false,
 			'external' => true,
 		),
+		array(
+			'id'       => 'holdings',
+			'label'    => __( 'SUPR XCIV Holdings', 'xciv-courier' ),
+			'short'    => __( 'Holdings', 'xciv-courier' ),
+			'glyph'    => 'H',
+			'blurb'    => __( 'Parent company & platforms', 'xciv-courier' ),
+			'url'      => 'https://www.suprxcivplatformholdings.com/',
+			'current'  => false,
+			'external' => true,
+		),
 	);
 
 	/**
