@@ -18,7 +18,8 @@ Theme is a junction to this repo: `wp-content/themes/xciv-courier`
 5. Build pages with Kadence in the block editor.
 6. Activate **WooCommerce** (installed via WP-CLI). Checkout pages are created automatically.
 7. For booking: open the site popup (**Book a line sitter** / `#book`), assign template **Booking**, or insert the **Booking Form** block. The form is a **6-step wizard**; submit sends the booking to WooCommerce checkout.
-8. SMS alerts via [SMS Alert](https://www.smsalert.co.in/): activate the **SMS Alert** plugin (`sms-alert`), log in under **WooCommerce → SMS Alert**, then set admin phone / booking toggles at **Settings → XCIV SMS**. Optional constants: `XCIV_SMSALERT_API_KEY`, `XCIV_SMSALERT_SENDER`, `XCIV_SMS_ADMIN_PHONE`. Admin gets a text on new bookings; customers who buy **Live SMS updates** get a confirmation.
+8. For the live service catalog: create a page, assign template **Service Listings** (or insert shortcode `[xciv_service_listings]`). Clients can search/filter listings; selecting one tracks **William A. Johnson** on the lead rider map with a live ETA for delivery or queue swap.
+9. SMS alerts via [SMS Alert](https://www.smsalert.co.in/): activate the **SMS Alert** plugin (`sms-alert`), log in under **WooCommerce → SMS Alert**, then set admin phone / booking toggles at **Settings → XCIV SMS**. Optional constants: `XCIV_SMSALERT_API_KEY`, `XCIV_SMSALERT_SENDER`, `XCIV_SMS_ADMIN_PHONE`. Admin gets a text on new bookings; customers who buy **Live SMS updates** get a confirmation.
 
 ## Theme layout (block theme)
 

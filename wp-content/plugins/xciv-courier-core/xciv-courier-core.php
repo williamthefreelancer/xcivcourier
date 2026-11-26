@@ -2,7 +2,7 @@
 /**
  * Plugin Name: XCIV Courier Core
  * Description: Ops dashboard, lead-rider modes, hubs, and Mapbox / custom lead-rider map for XCIV Courier.
- * Version: 1.0.0
+ * Version: 1.0.1
  * Author: XCIV
  * Text Domain: xciv-courier-core
  * Requires at least: 6.4
@@ -17,7 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'XCIV_CORE_VERSION', '1.0.0' );
+define( 'XCIV_CORE_VERSION', '1.0.1' );
 define( 'XCIV_CORE_FILE', __FILE__ );
 define( 'XCIV_CORE_DIR', plugin_dir_path( __FILE__ ) );
 define( 'XCIV_CORE_URI', plugin_dir_url( __FILE__ ) );

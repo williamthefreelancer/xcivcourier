@@ -219,6 +219,11 @@
 			"name": "page-booking",
 			"title": "Booking",
 			"postTypes": ["page"]
+		},
+		{
+			"name": "page-service-listings",
+			"title": "Service Listings",
+			"postTypes": ["page"]
 		}
 	]
 }

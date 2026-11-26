@@ -147,6 +147,111 @@
 
 		var markers = [];
 		var riderMarker = null;
+		var trackRiderMarker = null;
+		var trackTargetMarker = null;
+		var trackLine = null;
+
+		function clearTrackOverlays() {
+			if (trackRiderMarker) {
+				trackRiderMarker.remove();
+				trackRiderMarker = null;
+			}
+			if (trackTargetMarker) {
+				trackTargetMarker.remove();
+				trackTargetMarker = null;
+			}
+			if (map.getLayer && map.getLayer('xciv-track-line')) {
+				map.removeLayer('xciv-track-line');
+			}
+			if (map.getSource && map.getSource('xciv-track-line')) {
+				map.removeSource('xciv-track-line');
+			}
+			trackLine = null;
+		}
+
+		function onTrackListing(ev) {
+			var detail = (ev && ev.detail) || {};
+			var venue = detail.venue;
+			var pos = detail.position;
+			if (!venue || !pos) {
+				clearTrackOverlays();
+				return;
+			}
+
+			var destLng = venue.lng != null ? Number(venue.lng) : pos.lng;
+			var destLat = venue.lat != null ? Number(venue.lat) : pos.lat;
+			var origin = detail.origin || { lng: cfg.center[0], lat: cfg.center[1] };
+
+			if (!trackRiderMarker) {
+				var el = document.createElement('div');
+				el.className = 'xciv-map-pin xciv-map-pin--rider';
+				el.title = detail.riderName || 'Lead rider';
+				trackRiderMarker = new mapboxgl.Marker({ element: el })
+					.setLngLat([pos.lng, pos.lat])
+					.setPopup(
+						new mapboxgl.Popup({ offset: 12 }).setHTML(
+							'<strong>' +
+								escapeHtml(detail.riderName || 'Lead rider') +
+								'</strong><br>' +
+								escapeHtml(venue.name || '')
+						)
+					)
+					.addTo(map);
+			} else {
+				trackRiderMarker.setLngLat([pos.lng, pos.lat]);
+			}
+
+			if (!trackTargetMarker) {
+				var tel = document.createElement('div');
+				tel.className = 'xciv-map-pin xciv-map-pin--target';
+				tel.title = venue.name || 'Listing';
+				trackTargetMarker = new mapboxgl.Marker({ element: tel })
+					.setLngLat([destLng, destLat])
+					.addTo(map);
+			} else {
+				trackTargetMarker.setLngLat([destLng, destLat]);
+			}
+
+			var lineData = {
+				type: 'Feature',
+				geometry: {
+					type: 'LineString',
+					coordinates: [
+						[origin.lng, origin.lat],
+						[pos.lng, pos.lat],
+						[destLng, destLat],
+					],
+				},
+			};
+			if (map.getSource('xciv-track-line')) {
+				map.getSource('xciv-track-line').setData(lineData);
+			} else if (map.isStyleLoaded && map.isStyleLoaded()) {
+				map.addSource('xciv-track-line', { type: 'geojson', data: lineData });
+				map.addLayer({
+					id: 'xciv-track-line',
+					type: 'line',
+					source: 'xciv-track-line',
+					paint: {
+						'line-color': '#c4a35a',
+						'line-width': 2.5,
+						'line-opacity': 0.85,
+						'line-dasharray': [1.5, 1.5],
+					},
+				});
+			}
+			trackLine = lineData;
+
+			map.fitBounds(
+				[
+					[Math.min(origin.lng, pos.lng, destLng), Math.min(origin.lat, pos.lat, destLat)],
+					[Math.max(origin.lng, pos.lng, destLng), Math.max(origin.lat, pos.lat, destLat)],
+				],
+				{ padding: 56, maxZoom: 13, duration: 600 }
+			);
+		}
+
+		window.addEventListener('xciv:track-listing', onTrackListing);
+		root._xcivClearTrack = clearTrackOverlays;
 
 		function clearRadiusLayers() {
 			['xciv-range', 'xciv-free'].forEach(function (id) {
@@ -298,7 +403,92 @@
 		var rangeLayer = null;
 		var freeLayer = null;
 		var meMarker = null;
+		var trackRiderMarker = null;
+		var trackTargetMarker = null;
+		var trackLine = null;
 		var radiusCenter = center;
+
+		function clearTrackOverlays() {
+			if (trackRiderMarker) {
+				map.removeLayer(trackRiderMarker);
+				trackRiderMarker = null;
+			}
+			if (trackTargetMarker) {
+				map.removeLayer(trackTargetMarker);
+				trackTargetMarker = null;
+			}
+			if (trackLine) {
+				map.removeLayer(trackLine);
+				trackLine = null;
+			}
+		}
+
+		function onTrackListing(ev) {
+			var detail = (ev && ev.detail) || {};
+			var venue = detail.venue;
+			var pos = detail.position;
+			if (!venue || !pos) {
+				clearTrackOverlays();
+				return;
+			}
+
+			var destLat = venue.lat != null ? Number(venue.lat) : pos.lat;
+			var destLng = venue.lng != null ? Number(venue.lng) : pos.lng;
+			var origin = detail.origin || { lat: center[1], lng: center[0] };
+
+			if (!trackRiderMarker) {
+				trackRiderMarker = L.circleMarker([pos.lat, pos.lng], {
+					radius: 8,
+					color: '#f2efe8',
+					fillColor: '#c4a35a',
+					fillOpacity: 1,
+					weight: 2,
+					className: 'xciv-map-pin--rider',
+				})
+					.bindPopup(
+						'<strong>' +
+							escapeHtml(detail.riderName || 'Lead rider') +
+							'</strong><br>' +
+							escapeHtml(venue.name || '')
+					)
+					.addTo(map);
+			} else {
+				trackRiderMarker.setLatLng([pos.lat, pos.lng]);
+			}
+
+			if (!trackTargetMarker) {
+				trackTargetMarker = L.circleMarker([destLat, destLng], {
+					radius: 7,
+					color: '#f2efe8',
+					fillColor: '#7dcea0',
+					fillOpacity: 1,
+					weight: 2,
+				}).addTo(map);
+			} else {
+				trackTargetMarker.setLatLng([destLat, destLng]);
+			}
+
+			var latlngs = [
+				[origin.lat, origin.lng],
+				[pos.lat, pos.lng],
+				[destLat, destLng],
+			];
+			if (!trackLine) {
+				trackLine = L.polyline(latlngs, {
+					color: '#c4a35a',
+					weight: 2.5,
+					opacity: 0.85,
+					dashArray: '6 6',
+				}).addTo(map);
+			} else {
+				trackLine.setLatLngs(latlngs);
+			}
+
+			map.fitBounds(L.latLngBounds(latlngs).pad(0.35), { maxZoom: 13, animate: true });
+		}
+
+		window.addEventListener('xciv:track-listing', onTrackListing);
+		root._xcivClearTrack = clearTrackOverlays;
 
 		function drawRadii(lngLat) {
 			if (!cfg.showRadius) {
