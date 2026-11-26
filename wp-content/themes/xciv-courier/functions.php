@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'XCIV_COURIER_VERSION', '0.9.6' );
+define( 'XCIV_COURIER_VERSION', '0.9.7' );
 define( 'XCIV_COURIER_DIR', get_template_directory() );
 define( 'XCIV_COURIER_URI', get_template_directory_uri() );
 
@@ -22,6 +22,7 @@ require_once XCIV_COURIER_DIR . '/inc/booking-sms.php';
 require_once XCIV_COURIER_DIR . '/inc/booking-dashboard.php';
 require_once XCIV_COURIER_DIR . '/inc/shop-catalog.php';
 require_once XCIV_COURIER_DIR . '/inc/service-listings.php';
+require_once XCIV_COURIER_DIR . '/inc/auth.php';
 require_once XCIV_COURIER_DIR . '/inc/header-profile.php';
 require_once XCIV_COURIER_DIR . '/inc/lead-rider.php';
 require_once XCIV_COURIER_DIR . '/inc/pickup-hubs.php';

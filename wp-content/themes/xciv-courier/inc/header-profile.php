@@ -14,10 +14,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Account URL helpers with WooCommerce when available.
  *
- * @return array{home:string,account:string,orders:string,edit:string,logout:string}
+ * @return array{home:string,account:string,orders:string,edit:string,logout:string,login:string,register:string}
  */
 function xciv_header_profile_urls(): array {
-	$home = home_url( '/' );
+	$auth = function_exists( 'xciv_auth_urls' ) ? xciv_auth_urls() : null;
+
+	$home = $auth['home'] ?? home_url( '/' );
 	$front_id = (int) get_option( 'page_on_front' );
 	if ( get_option( 'show_on_front' ) === 'page' && $front_id > 0 ) {
 		$front = get_permalink( $front_id );
@@ -26,9 +28,12 @@ function xciv_header_profile_urls(): array {
 		}
 	}
 
-	$account = function_exists( 'wc_get_page_permalink' ) ? (string) wc_get_page_permalink( 'myaccount' ) : wp_login_url();
+	$account = $auth['account'] ?? '';
 	if ( $account === '' ) {
-		$account = wp_login_url();
+		$account = function_exists( 'wc_get_page_permalink' ) ? (string) wc_get_page_permalink( 'myaccount' ) : wp_login_url( $home );
+	}
+	if ( $account === '' ) {
+		$account = wp_login_url( $home );
 	}
 
 	$orders = $account;
@@ -38,14 +43,18 @@ function xciv_header_profile_urls(): array {
 		$edit   = wc_get_endpoint_url( 'edit-account', '', $account );
 	}
 
-	$logout = function_exists( 'wc_logout_url' ) ? wc_logout_url( $account ) : wp_logout_url( $home );
+	$logout   = $auth['logout'] ?? ( function_exists( 'wc_logout_url' ) ? wc_logout_url( $home ) : wp_logout_url( $home ) );
+	$login    = $auth['login'] ?? $account;
+	$register = $auth['register'] ?? add_query_arg( 'action', 'register', $account );
 
 	return array(
-		'home'    => $home,
-		'account' => $account,
-		'orders'  => $orders,
-		'edit'    => $edit,
-		'logout'  => $logout,
+		'home'     => $home,
+		'account'  => $account,
+		'orders'   => $orders,
+		'edit'     => $edit,
+		'logout'   => $logout,
+		'login'    => $login,
+		'register' => $register,
 	);
 }
 
@@ -150,15 +159,21 @@ function xciv_header_profile_render(): string {
 		? ( $first_name !== '' ? $first_name : __( 'Account', 'xciv-courier' ) )
 		: __( 'Sign in', 'xciv-courier' );
 
+	$registration_on = function_exists( 'xciv_auth_registration_enabled' ) ? xciv_auth_registration_enabled() : true;
+
 	ob_start();
 
-	// Guests: direct Sign in link only — no account menu / endpoints.
+	// Guests: Sign in menu (login + create account).
 	if ( ! $logged_in ) {
 		?>
-		<div class="xciv-header-profile xciv-header-profile--guest">
-			<a
+		<div class="xciv-header-profile xciv-header-profile--guest" data-xciv-header-profile>
+			<button
+				type="button"
 				class="xciv-header-profile__trigger"
-				href="<?php echo esc_url( $urls['account'] ); ?>"
+				data-xciv-header-profile-trigger
+				aria-expanded="false"
+				aria-haspopup="true"
+				aria-controls="xciv-header-profile-menu-guest"
 				aria-label="<?php echo esc_attr( $label ); ?>"
 			>
 				<span class="xciv-header-profile__avatar" aria-hidden="true">
@@ -171,7 +186,30 @@ function xciv_header_profile_render(): string {
 					</svg>
 				</span>
 				<span class="xciv-header-profile__label"><?php echo esc_html( $trigger_label ); ?></span>
-			</a>
+				<svg class="xciv-header-profile__chevron" width="12" height="12" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+					<path d="M6.5 9.25 12 14.5l5.5-5.25" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+				</svg>
+			</button>
+
+			<div
+				id="xciv-header-profile-menu-guest"
+				class="xciv-header-profile__menu"
+				data-xciv-header-profile-menu
+				hidden
+				role="menu"
+				aria-label="<?php echo esc_attr__( 'Sign in', 'xciv-courier' ); ?>"
+			>
+				<a class="xciv-header-profile__item" role="menuitem" href="<?php echo esc_url( $urls['login'] ); ?>">
+					<?php echo xciv_header_profile_icon( 'signin' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+					<span><?php esc_html_e( 'Sign in', 'xciv-courier' ); ?></span>
+				</a>
+				<?php if ( $registration_on ) : ?>
+					<a class="xciv-header-profile__item" role="menuitem" href="<?php echo esc_url( $urls['register'] ); ?>">
+						<?php echo xciv_header_profile_icon( 'account' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+						<span><?php esc_html_e( 'Create account', 'xciv-courier' ); ?></span>
+					</a>
+				<?php endif; ?>
+			</div>
 		</div>
 		<?php
 		return (string) ob_get_clean();
