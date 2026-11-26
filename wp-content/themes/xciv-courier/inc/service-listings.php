@@ -163,17 +163,20 @@ function xciv_listings_js_config(): array {
 	}
 
 	$hubs = array();
-	if ( function_exists( 'xciv_core_settings' ) ) {
+	if ( function_exists( 'xciv_core_public_hubs' ) ) {
+		$hubs = xciv_core_public_hubs();
+	} elseif ( function_exists( 'xciv_core_settings' ) ) {
 		$settings = xciv_core_settings();
 		$hubs     = is_array( $settings['hubs'] ?? null ) ? $settings['hubs'] : array();
 	}
 	if ( ! $hubs ) {
+		// Public fallback only — never include the private street address.
 		$hubs = array(
 			array(
 				'label' => 'University City',
 				'zip'   => '28262',
-				'lat'   => 35.312,
-				'lng'   => -80.744,
+				'lat'   => 35.3186178,
+				'lng'   => -80.6997960,
 			),
 		);
 	}

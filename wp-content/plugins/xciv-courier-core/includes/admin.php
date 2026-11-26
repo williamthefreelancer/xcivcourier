@@ -306,6 +306,11 @@ function xciv_core_render_rider_page(): void {
 					<input type="hidden" name="<?php echo esc_attr( XCIV_CORE_OPTION ); ?>[hubs][<?php echo (int) $i; ?>][lat]" value="<?php echo esc_attr( (string) $hub['lat'] ); ?>">
 					<input type="hidden" name="<?php echo esc_attr( XCIV_CORE_OPTION ); ?>[hubs][<?php echo (int) $i; ?>][lng]" value="<?php echo esc_attr( (string) $hub['lng'] ); ?>">
 				<?php endforeach; ?>
+				<input type="hidden" name="<?php echo esc_attr( XCIV_CORE_OPTION ); ?>[lead_rider][base_address]" value="<?php echo esc_attr( (string) ( $lr['base_address'] ?? '' ) ); ?>">
+				<input type="hidden" name="<?php echo esc_attr( XCIV_CORE_OPTION ); ?>[lead_rider][base_lat]" value="<?php echo esc_attr( (string) ( $lr['base_lat'] ?? '' ) ); ?>">
+				<input type="hidden" name="<?php echo esc_attr( XCIV_CORE_OPTION ); ?>[lead_rider][base_lng]" value="<?php echo esc_attr( (string) ( $lr['base_lng'] ?? '' ) ); ?>">
+				<input type="hidden" name="<?php echo esc_attr( XCIV_CORE_OPTION ); ?>[lead_rider][base_public_label]" value="<?php echo esc_attr( (string) ( $lr['base_public_label'] ?? 'University City' ) ); ?>">
+				<input type="hidden" name="<?php echo esc_attr( XCIV_CORE_OPTION ); ?>[lead_rider][base_public_zip]" value="<?php echo esc_attr( (string) ( $lr['base_public_zip'] ?? '28262' ) ); ?>">
 
 				<section class="xciv-admin__card">
 					<h2><?php esc_html_e( 'Enabled modes', 'xciv-courier-core' ); ?></h2>
@@ -319,6 +324,32 @@ function xciv_core_render_rider_page(): void {
 							<option value="tricycle" <?php selected( (string) $lr['default_mode'], 'tricycle' ); ?>><?php esc_html_e( 'E-Tricycle', 'xciv-courier-core' ); ?></option>
 							<option value="rideshare" <?php selected( (string) $lr['default_mode'], 'rideshare' ); ?>><?php esc_html_e( 'Rideshare', 'xciv-courier-core' ); ?></option>
 						</select>
+					</p>
+				</section>
+
+				<section class="xciv-admin__card">
+					<h2><?php esc_html_e( 'Private base (undisclosed)', 'xciv-courier-core' ); ?></h2>
+					<p class="description"><?php esc_html_e( 'Street address stays in admin only. Public maps and listings show the ZIP / area label — never the street.', 'xciv-courier-core' ); ?></p>
+					<p><label><?php esc_html_e( 'Private street address', 'xciv-courier-core' ); ?><br>
+						<input type="text" class="large-text" name="<?php echo esc_attr( XCIV_CORE_OPTION ); ?>[lead_rider][base_address]" value="<?php echo esc_attr( (string) ( $lr['base_address'] ?? '' ) ); ?>" autocomplete="off">
+					</label></p>
+					<p>
+						<label><?php esc_html_e( 'Base lat', 'xciv-courier-core' ); ?><br>
+							<input type="number" step="0.0000001" name="<?php echo esc_attr( XCIV_CORE_OPTION ); ?>[lead_rider][base_lat]" value="<?php echo esc_attr( (string) ( $lr['base_lat'] ?? '' ) ); ?>">
+						</label>
+						&nbsp;
+						<label><?php esc_html_e( 'Base lng', 'xciv-courier-core' ); ?><br>
+							<input type="number" step="0.0000001" name="<?php echo esc_attr( XCIV_CORE_OPTION ); ?>[lead_rider][base_lng]" value="<?php echo esc_attr( (string) ( $lr['base_lng'] ?? '' ) ); ?>">
+						</label>
+					</p>
+					<p>
+						<label><?php esc_html_e( 'Public map label', 'xciv-courier-core' ); ?><br>
+							<input type="text" name="<?php echo esc_attr( XCIV_CORE_OPTION ); ?>[lead_rider][base_public_label]" value="<?php echo esc_attr( (string) ( $lr['base_public_label'] ?? 'University City' ) ); ?>">
+						</label>
+						&nbsp;
+						<label><?php esc_html_e( 'Public ZIP', 'xciv-courier-core' ); ?><br>
+							<input type="text" name="<?php echo esc_attr( XCIV_CORE_OPTION ); ?>[lead_rider][base_public_zip]" value="<?php echo esc_attr( (string) ( $lr['base_public_zip'] ?? '28262' ) ); ?>">
+						</label>
 					</p>
 				</section>
 
@@ -410,6 +441,11 @@ function xciv_core_render_map_page(): void {
 					'car_max_miles',
 					'notes_tricycle',
 					'notes_rideshare',
+					'base_address',
+					'base_lat',
+					'base_lng',
+					'base_public_label',
+					'base_public_zip',
 				);
 				foreach ( $preserve as $key ) :
 					?>

@@ -40,6 +40,12 @@ function xciv_lead_rider_defaults(): array {
 		'car_max_miles'      => 18,
 		'notes_tricycle'     => __( 'Cargo fits rear basket / trunk box. Prefer flat routes under max range.', 'xciv-courier' ),
 		'notes_rideshare'    => __( 'You are a passenger — no personal vehicle. Keep parcels cabin-safe; no oversized trunk loads.', 'xciv-courier' ),
+		// Private base — street address comes from Core admin / wp-config only.
+		'base_address'       => '',
+		'base_lat'           => 35.3186178,
+		'base_lng'           => -80.6997960,
+		'base_public_label'  => 'University City',
+		'base_public_zip'    => '28262',
 	);
 }
 

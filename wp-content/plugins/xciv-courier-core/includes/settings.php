@@ -39,13 +39,19 @@ function xciv_core_default_settings(): array {
 			'car_max_miles'        => 18,
 			'notes_tricycle'       => 'Cargo fits rear basket / trunk box. Prefer flat routes under max range.',
 			'notes_rideshare'      => 'You are a passenger — no personal vehicle. Keep parcels cabin-safe; no oversized trunk loads.',
+			// Private lead-rider base — street address is admin / wp-config only; never localize to the front end.
+			'base_address'         => '',
+			'base_lat'             => 35.3186178,
+			'base_lng'             => -80.6997960,
+			'base_public_label'    => 'University City',
+			'base_public_zip'      => '28262',
 		),
 		'map'        => array(
 			'provider'     => 'custom', // custom (Leaflet) | mapbox
 			'mapbox_token' => '',
 			'mapbox_style' => 'mapbox://styles/mapbox/dark-v11',
-			'center_lat'   => 35.312,
-			'center_lng'   => -80.744,
+			'center_lat'   => 35.3186178,
+			'center_lng'   => -80.6997960,
 			'zoom'         => 11,
 			'show_hubs'    => true,
 			'show_venues'  => true,
@@ -56,8 +62,8 @@ function xciv_core_default_settings(): array {
 				'id'   => 'ucity',
 				'label'=> 'University City',
 				'zip'  => '28262',
-				'lat'  => 35.312,
-				'lng'  => -80.744,
+				'lat'  => 35.3186178,
+				'lng'  => -80.6997960,
 			),
 			array(
 				'id'   => 'eastland',
@@ -105,7 +111,110 @@ function xciv_core_settings(): array {
 		$settings['map']['mapbox_token'] = (string) XCIV_MAPBOX_TOKEN;
 	}
 
+	// Optional private street address from wp-config (never shipped in theme/plugin defaults).
+	if ( defined( 'XCIV_LEAD_RIDER_BASE_ADDRESS' ) && XCIV_LEAD_RIDER_BASE_ADDRESS ) {
+		$settings['lead_rider']['base_address'] = (string) XCIV_LEAD_RIDER_BASE_ADDRESS;
+	}
+	if ( defined( 'XCIV_LEAD_RIDER_BASE_LAT' ) ) {
+		$settings['lead_rider']['base_lat'] = (float) XCIV_LEAD_RIDER_BASE_LAT;
+	}
+	if ( defined( 'XCIV_LEAD_RIDER_BASE_LNG' ) ) {
+		$settings['lead_rider']['base_lng'] = (float) XCIV_LEAD_RIDER_BASE_LNG;
+	}
+
+	// Keep the primary public hub aligned with the private base (ZIP / area label only).
+	$settings['hubs'] = xciv_core_public_hubs( $settings );
+
 	return $settings;
+}
+
+/**
+ * Public hub pins — ZIP / area labels only. Never includes the private street address.
+ *
+ * @param array<string, mixed>|null $settings Optional settings snapshot.
+ * @return array<int, array{id:string,label:string,zip:string,lat:float,lng:float}>
+ */
+function xciv_core_public_hubs( ?array $settings = null ): array {
+	if ( $settings === null ) {
+		// Avoid recursion: read raw option + defaults without calling xciv_core_settings().
+		$stored = get_option( XCIV_CORE_OPTION, array() );
+		if ( ! is_array( $stored ) ) {
+			$stored = array();
+		}
+		$settings = wp_parse_args( $stored, xciv_core_default_settings() );
+		$settings['lead_rider'] = wp_parse_args(
+			is_array( $settings['lead_rider'] ?? null ) ? $settings['lead_rider'] : array(),
+			xciv_core_default_settings()['lead_rider']
+		);
+	}
+
+	$rider = is_array( $settings['lead_rider'] ?? null ) ? $settings['lead_rider'] : array();
+	$base_lat = (float) ( $rider['base_lat'] ?? 35.3186178 );
+	$base_lng = (float) ( $rider['base_lng'] ?? -80.6997960 );
+	$label    = (string) ( $rider['base_public_label'] ?? 'University City' );
+	$zip      = (string) ( $rider['base_public_zip'] ?? '28262' );
+
+	$hubs = is_array( $settings['hubs'] ?? null ) ? $settings['hubs'] : xciv_core_default_settings()['hubs'];
+	$out  = array();
+	$saw_primary = false;
+
+	foreach ( $hubs as $hub ) {
+		if ( ! is_array( $hub ) ) {
+			continue;
+		}
+		$id = (string) ( $hub['id'] ?? '' );
+		if ( $id === 'ucity' ) {
+			$saw_primary = true;
+			$out[]       = array(
+				'id'    => 'ucity',
+				'label' => $label,
+				'zip'   => $zip,
+				'lat'   => $base_lat,
+				'lng'   => $base_lng,
+			);
+			continue;
+		}
+		$out[] = array(
+			'id'    => $id,
+			'label' => (string) ( $hub['label'] ?? $id ),
+			'zip'   => (string) ( $hub['zip'] ?? '' ),
+			'lat'   => (float) ( $hub['lat'] ?? 0 ),
+			'lng'   => (float) ( $hub['lng'] ?? 0 ),
+		);
+	}
+
+	if ( ! $saw_primary ) {
+		array_unshift(
+			$out,
+			array(
+				'id'    => 'ucity',
+				'label' => $label,
+				'zip'   => $zip,
+				'lat'   => $base_lat,
+				'lng'   => $base_lng,
+			)
+		);
+	}
+
+	return $out;
+}
+
+/**
+ * Private lead-rider base (admin / server use only — do not localize address to the front end).
+ *
+ * @return array{address:string,lat:float,lng:float,public_label:string,public_zip:string}
+ */
+function xciv_core_private_base(): array {
+	$settings = xciv_core_settings();
+	$rider    = is_array( $settings['lead_rider'] ?? null ) ? $settings['lead_rider'] : array();
+
+	return array(
+		'address'      => (string) ( $rider['base_address'] ?? '' ),
+		'lat'          => (float) ( $rider['base_lat'] ?? 35.3186178 ),
+		'lng'          => (float) ( $rider['base_lng'] ?? -80.6997960 ),
+		'public_label' => (string) ( $rider['base_public_label'] ?? 'University City' ),
+		'public_zip'   => (string) ( $rider['base_public_zip'] ?? '28262' ),
+	);
 }
 
 /**
@@ -166,14 +275,20 @@ function xciv_core_sanitize_settings( $input ): array {
 	$out['lead_rider']['car_max_miles']        = max( 1, (float) ( $lr['car_max_miles'] ?? 18 ) );
 	$out['lead_rider']['notes_tricycle']       = sanitize_textarea_field( (string) ( $lr['notes_tricycle'] ?? '' ) );
 	$out['lead_rider']['notes_rideshare']      = sanitize_textarea_field( (string) ( $lr['notes_rideshare'] ?? '' ) );
+	$out['lead_rider']['base_address']         = sanitize_text_field( (string) ( $lr['base_address'] ?? $defaults['lead_rider']['base_address'] ) );
+	$out['lead_rider']['base_lat']             = (float) ( $lr['base_lat'] ?? $defaults['lead_rider']['base_lat'] );
+	$out['lead_rider']['base_lng']             = (float) ( $lr['base_lng'] ?? $defaults['lead_rider']['base_lng'] );
+	$out['lead_rider']['base_public_label']    = sanitize_text_field( (string) ( $lr['base_public_label'] ?? 'University City' ) );
+	$out['lead_rider']['base_public_zip']      = sanitize_text_field( (string) ( $lr['base_public_zip'] ?? '28262' ) );
 
 	$map = isset( $input['map'] ) && is_array( $input['map'] ) ? $input['map'] : array();
 	$provider = sanitize_key( (string) ( $map['provider'] ?? 'custom' ) );
 	$out['map']['provider']     = in_array( $provider, array( 'mapbox', 'custom' ), true ) ? $provider : 'custom';
 	$out['map']['mapbox_token'] = sanitize_text_field( (string) ( $map['mapbox_token'] ?? '' ) );
 	$out['map']['mapbox_style'] = sanitize_text_field( (string) ( $map['mapbox_style'] ?? 'mapbox://styles/mapbox/dark-v11' ) );
-	$out['map']['center_lat']   = (float) ( $map['center_lat'] ?? 35.312 );
-	$out['map']['center_lng']   = (float) ( $map['center_lng'] ?? -80.744 );
+	// Default map center to private base when not explicitly posted.
+	$out['map']['center_lat']   = (float) ( $map['center_lat'] ?? $out['lead_rider']['base_lat'] );
+	$out['map']['center_lng']   = (float) ( $map['center_lng'] ?? $out['lead_rider']['base_lng'] );
 	$out['map']['zoom']         = max( 3, min( 18, (float) ( $map['zoom'] ?? 11 ) ) );
 	$out['map']['show_hubs']    = ! empty( $map['show_hubs'] );
 	$out['map']['show_venues']  = ! empty( $map['show_venues'] );
@@ -198,6 +313,18 @@ function xciv_core_sanitize_settings( $input ): array {
 		);
 	}
 	$out['hubs'] = $hubs !== array() ? $hubs : $defaults['hubs'];
+
+	// Keep primary public hub + map center synced to private base (label/ZIP only publicly).
+	foreach ( $out['hubs'] as $i => $hub ) {
+		if ( ( $hub['id'] ?? '' ) === 'ucity' ) {
+			$out['hubs'][ $i ]['label'] = $out['lead_rider']['base_public_label'];
+			$out['hubs'][ $i ]['zip']   = $out['lead_rider']['base_public_zip'];
+			$out['hubs'][ $i ]['lat']   = $out['lead_rider']['base_lat'];
+			$out['hubs'][ $i ]['lng']   = $out['lead_rider']['base_lng'];
+		}
+	}
+	$out['map']['center_lat'] = $out['lead_rider']['base_lat'];
+	$out['map']['center_lng'] = $out['lead_rider']['base_lng'];
 
 	return $out;
 }

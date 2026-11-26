@@ -63,22 +63,24 @@ function xciv_core_map_config(): array {
 		'free'      => function_exists( 'xciv_booking_free_radius_miles' ) ? xciv_booking_free_radius_miles() : 10.0,
 	);
 
+	$base_lat = (float) ( $rider['base_lat'] ?? ( $map['center_lat'] ?? 35.3186178 ) );
+	$base_lng = (float) ( $rider['base_lng'] ?? ( $map['center_lng'] ?? -80.6997960 ) );
+
 	return array(
 		'provider'         => $provider,
 		'token'            => $token,
 		'style'            => (string) ( $map['mapbox_style'] ?? 'mapbox://styles/mapbox/dark-v11' ),
-		'center'           => array(
-			(float) ( $map['center_lng'] ?? -80.744 ),
-			(float) ( $map['center_lat'] ?? 35.312 ),
-		),
+		'center'           => array( $base_lng, $base_lat ),
 		'zoom'             => (float) ( $map['zoom'] ?? 11 ),
 		'showHubs'         => ! empty( $map['show_hubs'] ),
 		'showVenues'       => ! empty( $map['show_venues'] ),
 		'showRadius'       => ! empty( $map['show_radius'] ),
-		'hubs'             => $settings['hubs'],
+		// Public hubs only — never include private street address.
+		'hubs'             => function_exists( 'xciv_core_public_hubs' ) ? xciv_core_public_hubs( $settings ) : $settings['hubs'],
 		'venues'           => xciv_core_map_venues(),
 		'radii'            => $radii,
 		'riderMode'        => (string) ( $rider['default_mode'] ?? 'car' ),
+		'riderName'        => 'William A. Johnson',
 		'leafletImagePath' => XCIV_CORE_URI . 'assets/vendor/leaflet/images/',
 		'i18n'             => array(
 			'hub'     => __( 'Hub', 'xciv-courier-core' ),
