@@ -12,6 +12,17 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
+ * Collapse whitespace between tags so core/shortcode wpautop cannot inject <br>.
+ */
+function xciv_compact_chrome_html( string $html ): string {
+	$html = preg_replace( '/\s+/u', ' ', $html ) ?? $html;
+	$html = preg_replace( '/>\s+</', '><', $html ) ?? $html;
+	$html = preg_replace( '#<br\s*/?>#i', '', $html ) ?? $html;
+
+	return trim( $html );
+}
+
+/**
  * Account URL helpers with WooCommerce when available.
  *
  * @return array{home:string,account:string,orders:string,edit:string,logout:string,login:string,register:string}
@@ -212,7 +223,7 @@ function xciv_header_profile_render(): string {
 			</div>
 		</div>
 		<?php
-		return (string) ob_get_clean();
+		return xciv_compact_chrome_html( (string) ob_get_clean() );
 	}
 	?>
 	<div class="xciv-header-profile" data-xciv-header-profile>
@@ -294,7 +305,7 @@ function xciv_header_profile_render(): string {
 	</div>
 	<?php
 
-	return (string) ob_get_clean();
+	return xciv_compact_chrome_html( (string) ob_get_clean() );
 }
 add_shortcode( 'xciv_header_profile', 'xciv_header_profile_render' );
 
@@ -468,9 +479,35 @@ function xciv_header_brand_render(): string {
 	</div>
 	<?php
 
-	return (string) ob_get_clean();
+	return xciv_compact_chrome_html( (string) ob_get_clean() );
 }
 add_shortcode( 'xciv_header_brand', 'xciv_header_brand_render' );
+
+/**
+ * Strip wpautop leftovers from header chrome shortcode blocks.
+ *
+ * @param string               $block_content Rendered block HTML.
+ * @param array<string, mixed> $block         Parsed block.
+ */
+function xciv_clean_header_chrome_shortcode_block( string $block_content, array $block ): string {
+	if ( ( $block['blockName'] ?? '' ) !== 'core/shortcode' ) {
+		return $block_content;
+	}
+
+	if (
+		! str_contains( $block_content, 'xciv-product-switcher' )
+		&& ! str_contains( $block_content, 'xciv-header-profile' )
+		&& ! str_contains( $block_content, 'xciv-header-brand' )
+		&& ! str_contains( $block_content, 'xciv-rider-modes' )
+		&& ! str_contains( $block_content, 'xciv-hub-modes' )
+		&& ! str_contains( $block_content, 'xciv-header-tabs' )
+	) {
+		return $block_content;
+	}
+
+	return xciv_compact_chrome_html( $block_content );
+}
+add_filter( 'render_block', 'xciv_clean_header_chrome_shortcode_block', 20, 2 );
 
 /**
  * Prefer theme site icon over Customizer / empty default.

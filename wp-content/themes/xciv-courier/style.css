@@ -4,7 +4,7 @@ Theme URI: https://xcivcourier.com
 Author: SUPR XCIV PLATFORM HOLDINGS LLC
 Author URI: mailto:support@xcivcourier.com
 Description: Block theme for XCIV Courier. Site layouts via the Site Editor + Kadence Blocks; custom booking form block only.
-Version: 0.9.11
+Version: 0.9.12
 Requires at least: 6.4
 Tested up to: 6.8
 Requires PHP: 8.1
@@ -169,20 +169,32 @@ header .xciv-product-switcher__menu {
 	position: absolute;
 	top: calc(100% + 0.5rem);
 	left: 0;
-	z-index: 45;
+	z-index: 60;
 	box-sizing: border-box;
+	display: flex;
+	flex-direction: column;
+	gap: 0.2rem;
 	width: max-content;
-	min-width: 16.5rem;
-	max-width: min(18.5rem, calc(100vw - 1.5rem));
+	min-width: 17rem;
+	max-width: min(19rem, calc(100vw - 1.5rem));
 	padding: 0.4rem;
-	border: 1px solid rgba(242, 239, 232, 0.14);
+	border: 1px solid rgba(242, 239, 232, 0.16);
 	border-radius: 0.95rem;
-	background:
-		linear-gradient(180deg, rgba(242, 239, 232, 0.05), transparent 40%),
-		var(--wp--preset--color--bg-elevated, #151a1f);
+	background-color: #12171c;
+	background-image: linear-gradient(180deg, rgba(242, 239, 232, 0.06), transparent 42%);
 	box-shadow:
-		0 12px 28px rgba(0, 0, 0, 0.42),
-		0 1px 0 rgba(242, 239, 232, 0.06) inset;
+		0 18px 40px rgba(0, 0, 0, 0.55),
+		0 0 0 1px rgba(0, 0, 0, 0.35),
+		0 1px 0 rgba(242, 239, 232, 0.07) inset;
+	isolation: isolate;
+}
+
+/* wpautop leftovers must never participate in layout */
+header .xciv-product-switcher br,
+header .xciv-product-switcher p,
+header .xciv-header-profile br,
+header .xciv-header-profile p {
+	display: none !important;
 }
 
 header .xciv-product-switcher__menu[hidden] {
@@ -205,10 +217,12 @@ header .xciv-product-switcher.is-open .xciv-product-switcher__menu:not([hidden])
 }
 
 header .xciv-product-switcher__item {
-	display: grid;
-	grid-template-columns: auto minmax(0, 1fr) auto;
+	display: flex;
 	align-items: center;
 	gap: 0.7rem;
+	box-sizing: border-box;
+	width: 100%;
+	min-height: 3.15rem;
 	padding: 0.55rem 0.65rem;
 	border-radius: 0.7rem;
 	color: var(--wp--preset--color--ink, #f2efe8);
@@ -222,7 +236,7 @@ header .xciv-product-switcher__item:hover {
 }
 
 header .xciv-product-switcher__item.is-current {
-	background: rgba(196, 163, 90, 0.14);
+	background: rgba(196, 163, 90, 0.16);
 	color: #fff8e8;
 }
 
@@ -258,6 +272,7 @@ header .xciv-product-switcher__item-text {
 	display: flex;
 	flex-direction: column;
 	gap: 0.15rem;
+	flex: 1 1 auto;
 	min-width: 0;
 }
 
@@ -286,6 +301,7 @@ header .xciv-product-switcher__check {
 
 header .xciv-product-switcher__check-spacer {
 	display: block;
+	flex-shrink: 0;
 	width: 14px;
 	height: 14px;
 }

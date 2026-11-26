@@ -197,6 +197,7 @@ function xciv_pickup_hub_controls_render(): string {
 	</div>
 	<?php
 
-	return (string) ob_get_clean();
+	$html = (string) ob_get_clean();
+	return function_exists( 'xciv_compact_chrome_html' ) ? xciv_compact_chrome_html( $html ) : $html;
 }
 add_shortcode( 'xciv_pickup_hub_controls', 'xciv_pickup_hub_controls_render' );
