@@ -363,6 +363,16 @@ function xciv_product_switcher_items(): array {
 			'external' => true,
 		),
 		array(
+			'id'       => 'litterpickup',
+			'label'    => __( 'Litter Pickup Service', 'xciv-courier' ),
+			'short'    => __( 'Litter', 'xciv-courier' ),
+			'glyph'    => 'L',
+			'blurb'    => __( 'Exterior litter pickup routes', 'xciv-courier' ),
+			'url'      => 'https://www.litterpickupserviceatsuperninetyfour.com/',
+			'current'  => false,
+			'external' => true,
+		),
+		array(
 			'id'       => 'holdings',
 			'label'    => __( 'SUPR XCIV Holdings', 'xciv-courier' ),
 			'short'    => __( 'Holdings', 'xciv-courier' ),
